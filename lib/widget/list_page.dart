@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/data/remote_model.dart';
+import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 
 class ListPage extends StatelessWidget {
@@ -22,7 +23,7 @@ class ListPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.brown,
           title: const Text(
-            'Nongki',
+            'Restauran Apps',
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w900,
@@ -49,51 +50,60 @@ class ListPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 55,
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                child: const Text(
-                  ' Tempat TerHits',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
+                  height: 55,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(left: 20, top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Hitsss',
+                          style: GoogleFonts.oswald(
+                            fontSize: 25,
+                            color: Colors.white,
+                          )),
+                      Icon(Icons.thunderstorm_outlined)
+                    ],
+                  )),
+              SizedBox(
+                height: 10,
               ),
               Expanded(
-                child: Obx(() {
-                  try {
-                    if (!controller.hasInternetConnection.value) {
-                      return Center(child: Text('No internet connection'));
+                child: FutureBuilder<List<RestaurantModel>>(
+                  future: restaurantApi.getListOfRestaurants(context, []),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return NotFound(
+                        codeError: '500',
+                        message: 'An error occurred: ${snapshot.error}',
+                      );
+                    } else if (snapshot.data == null ||
+                        snapshot.data!.isEmpty) {
+                      return NotFound(
+                        codeError: '404',
+                        message: 'No restaurants available',
+                      );
+                    } else {
+                      // Build your UI using the snapshot.data
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 16.0,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return _buildArticleItem(
+                            context,
+                            snapshot.data![index],
+                          );
+                        },
+                      );
                     }
-
-                    final List<RestaurantModel>? restaurants =
-                        controller.restaurants;
-
-                    if (restaurants == null) {
-                      return Center(child: Text('No data available'));
-                    }
-
-                    if (restaurants.isEmpty) {
-                      return Center(child: Text('No restaurants available'));
-                    }
-
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 16.0,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemCount: restaurants.length,
-                      itemBuilder: (context, index) {
-                        return _buildArticleItem(context, restaurants[index]);
-                      },
-                    );
-                  } finally {
-                    return Text('Hapus Data');
-                  }
-                }),
+                  },
+                ),
               ),
             ],
           ),
@@ -134,14 +144,14 @@ class ListPage extends StatelessWidget {
               style: GoogleFonts.openSans(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Colors.white, // Sesuaikan dengan warna yang diinginkan
+                color: Colors.white,
               ),
             ),
             Text(
-              'Khas ${restaurant.city}',
+              ' ${restaurant.city}',
               style: GoogleFonts.openSans(
                 fontSize: 14,
-                color: Colors.white, // Sesuaikan dengan warna yang diinginkan
+                color: Colors.white,
               ),
             ),
             SizedBox(
@@ -164,8 +174,7 @@ class ListPage extends StatelessWidget {
                   '${restaurant.rating}',
                   style: GoogleFonts.openSans(
                     fontSize: 16,
-                    color:
-                        Colors.white, // Sesuaikan dengan warna yang diinginkan
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -180,8 +189,7 @@ class ListPage extends StatelessWidget {
                   'Lihat detail',
                   style: GoogleFonts.openSans(
                     fontSize: 14,
-                    color:
-                        Colors.white, // Sesuaikan dengan warna yang diinginkan
+                    color: Colors.white,
                   ),
                 ),
                 Icon(
@@ -196,31 +204,6 @@ class ListPage extends StatelessWidget {
     );
   }
 }
-//  ListTile(
-//         contentPadding:
-//             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-//         leading: SizedBox(
-//           width: 56.0,
-//           child:
-//         title: Text(restaurant.name),
-//         subtitle: Text(restaurant.city),
-//         trailing: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Icon(Icons.star,
-//                 color: Colors.yellow,
-//                 size: 18), // Ganti dengan ikon yang sesuai
-//             SizedBox(width: 4),
-//             Text(
-//               '${restaurant.rating}',
-//               style: TextStyle(fontSize: 16),
-//             )
-//           ],
-//         ),
-//         onTap: () {
-//         },
-//       ),
-//     );
 
 class ImgApi extends StatelessWidget {
   final String imageUrl;
@@ -230,9 +213,7 @@ class ImgApi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius:
-          BorderRadius.circular(5.0), // Sesuaikan dengan preferensi Anda
-
+      borderRadius: BorderRadius.circular(5.0),
       child: Image.network(
         imageUrl,
         width: double.infinity,

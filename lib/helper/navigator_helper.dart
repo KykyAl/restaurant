@@ -5,10 +5,6 @@ class NavigatorHelper {
   String detailPage = "/DetailPage";
   String searchPage = "/SearchPage";
   String splashScreen = "/SplashScreen";
+  String notFound = "/NoutFound";
 }
 
-  //  NewsListPage.routeName: (context) => const NewsListPage(),
-  //       ArticleDetailPage.routeName: (context) => ArticleDetailPage(
-  //           article: ModalRoute.of(context)?.settings.arguments as Restaurant),
-  //       ArticleWebView.routeName: (context) => ArticleWebView(
-  //           url: ModalRoute.of(context)?.settings.arguments as String)

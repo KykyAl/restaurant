@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/controller/controller.dart';
-import 'package:restauran_app/detail_list_page.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/list_page.dart';
-import 'package:restauran_app/list_search.dart';
+import 'package:restauran_app/widget/detail_list_page.dart';
+import 'package:restauran_app/widget/list_page.dart';
+import 'package:restauran_app/widget/list_search.dart';
 
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,15 +63,12 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1000),
     );
 
-    // ... kode initState lainnya
-
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller
-        .dispose(); // Memastikan untuk membuang Ticker bersamaan dengan AnimationController
+    _controller.dispose();
     super.dispose();
   }
 
@@ -79,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSplashScreen(
-        duration: 3000,
+        duration: 1500,
         splash: SpinKitWave(
           controller: _controller,
           color: Colors.brown,

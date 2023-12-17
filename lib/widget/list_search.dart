@@ -76,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
                   _performSearch(query);
                 },
                 decoration: InputDecoration(
-                  labelText: 'Cari',
+                  labelText: 'Cari....',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -94,11 +94,9 @@ class _SearchPageState extends State<SearchPage> {
         child: CircularProgressIndicator(),
       );
     } else if (_searchResults.isEmpty) {
-      return Center(
-        child: Text(
-          'Tidak ditemukan hasil.',
-          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+      return Text(
+        'Tidak ditemukan hasil.',
+        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
       );
     } else {
       return Expanded(
@@ -142,27 +140,15 @@ class _SearchPageState extends State<SearchPage> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Kategori :',
-                          style: GoogleFonts.poppins(
-                              fontSize: 16, fontWeight: FontWeight.w800),
-                        ),
-                        Text(
-                            ' ${restauranDetail.categories.map((category) => category.name).join(', ')}'),
-                      ],
+                    Text(
+                      'Kategori : ${restauranDetail.categories.map((category) => category.name).join(', ')}',
+                      style: GoogleFonts.poppins(fontSize: 14),
                     ),
                     SizedBox(
                       height: 8,
                     ),
                     Text(
-                      'Menu: ',
-                      style: GoogleFonts.poppins(
-                          fontSize: 16, fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                        '${restauranDetail.menus.foods.map((food) => food.name).join(', ')}')
+                        'Menu: ${restauranDetail.menus.foods.map((food) => food.name).join(', ')}'),
                   ],
                 ),
                 trailing: Row(

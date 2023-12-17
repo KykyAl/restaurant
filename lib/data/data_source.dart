@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/data/remote_model_detail.dart';
@@ -21,17 +23,43 @@ class RemoteDatasource {
     }
   }
 
-  Future<List<RestaurantModel>> getListOfRestaurants(List<String?> list) async {
-    final response = await http.get(Uri.parse('$_BASE_URL/list'));
+  Future<List<RestaurantModel>> getListOfRestaurants(
+      BuildContext context, List<String?> list) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final List<dynamic> restaurantsData = data['restaurants'];
-      return restaurantsData.map((restaurant) {
-        return RestaurantModel.fromJson(restaurant);
-      }).toList();
-    } else {
-      throw Exception('Failed to load restaurants');
+    if (connectivityResult == ConnectivityResult.none) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('No internet connection'),
+        ),
+      );
+
+      throw Exception('No internet connection');
+    }
+
+    try {
+      final response = await http.get(Uri.parse('$_BASE_URL/list'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> restaurantsData = data['restaurants'];
+        return restaurantsData.map((restaurant) {
+          return RestaurantModel.fromJson(restaurant);
+        }).toList();
+      } else {
+        throw Exception('No internet connection');
+      }
+    } catch (e) {
+      // Handle other exceptions
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Error: $e'),
+        ),
+      );
+
+      throw e; // Rethrow the exception after showing the SnackBar
     }
   }
 
@@ -72,7 +100,7 @@ class RemoteDatasource {
               .toList(),
         );
       } else {
-        throw Exception('Failed to load restaurant detail');
+        throw Exception('No internet connection');
       }
     } catch (e) {
       throw Exception('Error: $e');
@@ -91,10 +119,10 @@ class RemoteDatasource {
             .map((json) => RestaurantSearchModel.fromJson(json))
             .toList();
       } else {
-        throw Exception('Failed to load restaurants');
+        throw Exception('No internet connection');
       }
     } else {
-      throw Exception('Failed to load restaurants');
+      throw Exception('No internet connection');
     }
   }
 }
