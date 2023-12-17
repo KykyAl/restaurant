@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 
@@ -14,6 +15,26 @@ class RestaurantController extends GetxController {
   RxList<RestaurantModel> listRestaurant = <RestaurantModel>[].obs;
   RxList<RestaurantModel> listDetailTaskSearch = <RestaurantModel>[].obs;
   Rx<TextEditingController> areaSearchTE = TextEditingController(text: '').obs;
+    final RemoteDatasource restaurantApi = RemoteDatasource();
+
+  var restaurants = <RestaurantModel>[].obs;
+  var isLoading = true.obs;
+  var isError = false.obs;
+
+  Future<void> fetchRestaurants(context) async {
+    try {
+      isLoading(true);
+      // Ganti dengan panggilan ke Future yang sesuai
+      List<RestaurantModel> data = await restaurantApi.getListOfRestaurants(context, [])  ;
+      restaurants.assignAll(data);
+    } catch (error) {
+      isError(true);
+      print('Error fetching restaurants: $error');
+    } finally {
+      isLoading(false);
+    }
+  }
+
 
   // Future<void> getListRestaurant() async {
   //   final body = RestaurantModel(

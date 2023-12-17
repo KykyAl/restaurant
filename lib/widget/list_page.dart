@@ -68,7 +68,7 @@ class ListPage extends StatelessWidget {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                      return SnackBar(
-  content: Container(
+  content: Container( 
     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
     decoration: BoxDecoration(
       color: Colors.grey[800], // Choose a suitable background color

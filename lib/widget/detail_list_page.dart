@@ -16,7 +16,7 @@ class RestaurantDetailScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Detail Restoran',
+          title: const Text('Pencarian Restoran',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           backgroundColor: Colors.brown,
         ),
