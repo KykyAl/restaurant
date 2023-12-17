@@ -71,6 +71,9 @@ class RestaurantDetailScreen extends StatelessWidget {
                               color: Colors.brown,
                             ),
                           ),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text('Address: ${restaurant.address}'),
                           SizedBox(height: 16),
                           Text(
@@ -81,7 +84,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                               color: Colors.brown,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 5),
                           Text(
                             'Rating: ${restaurant.rating}',
                             style: GoogleFonts.openSans(
@@ -90,27 +93,57 @@ class RestaurantDetailScreen extends StatelessWidget {
                               color: Colors.brown,
                             ),
                           ),
-                          SizedBox(height: 16),
-                          Text('Menus:',
-                              style: GoogleFonts.openSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.brown)),
-                          Text(
-                            'Foods: ${restaurant.menus.foods.map((food) => food.name).join(', ')}',
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown,
-                            ),
+                          SizedBox(height: 20),
+                          Center(
+                            child: Text('Menu:',
+                                style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown)),
                           ),
-                          Text(
-                            'Drinks: ${restaurant.menus.drinks.map((drink) => drink.name).join(', ')}',
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown,
-                            ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text('data'),
+                          Column(
+                            children: restaurant.menus.foods.map((food) {
+                              return Card(
+                                // Atur atribut-atribut kartu sesuai kebutuhan
+                                child: ListTile(
+                                  leading: Icon(Icons.food_bank),
+                                  title: Text(
+                                    food.name,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.brown,
+                                    ),
+                                  ),
+                                  // Tambahkan atribut-atribut lainnya seperti subtitle, gambar, dll.
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            children: restaurant.menus.drinks.map((drink) {
+                              return Card(
+                                // Atur atribut-atribut kartu sesuai kebutuhan
+                                child: ListTile(
+                                  title: Text(
+                                    drink.name,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.brown,
+                                    ),
+                                  ),
+                                  // Tambahkan atribut-atribut lainnya seperti subtitle, gambar, dll.
+                                ),
+                              );
+                            }).toList(),
                           ),
                           SizedBox(height: 16),
                           Text(
