@@ -76,16 +76,15 @@ class ListPage extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       return NotFound(
                         codeError: '500',
-                        message: 'An error occurred: ${snapshot.error}',
+                        message: ' error : ${snapshot.error}',
                       );
                     } else if (snapshot.data == null ||
                         snapshot.data!.isEmpty) {
                       return NotFound(
                         codeError: '404',
-                        message: 'No restaurants available',
+                        message: ' restaurants tidak di temuakan',
                       );
                     } else {
-                      // Build your UI using the snapshot.data
                       return GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -130,7 +129,7 @@ class ListPage extends StatelessWidget {
               height: 130,
               child: ImgApi(
                 imageUrl:
-                    'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                    'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
               ),
             ),
             Divider(

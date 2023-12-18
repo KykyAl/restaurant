@@ -51,7 +51,6 @@ class RemoteDatasource {
         throw Exception('No internet connection');
       }
     } catch (e) {
-      // Handle other exceptions
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
@@ -59,7 +58,7 @@ class RemoteDatasource {
         ),
       );
 
-      throw e; // Rethrow the exception after showing the SnackBar
+      throw e;
     }
   }
 

@@ -100,7 +100,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                               )
                             ],
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 25),
                           Center(
                             child: Container(
                               width: 65,
@@ -146,9 +146,11 @@ class RestaurantDetailScreen extends StatelessWidget {
                           Column(
                             children: restaurant.menus.foods.map((food) {
                               return Card(
-                                // Atur atribut-atribut kartu sesuai kebutuhan
                                 child: ListTile(
-                                  leading: Icon(Icons.food_bank),
+                                  leading: Icon(
+                                    Icons.food_bank_rounded,
+                                    color: Colors.red,
+                                  ),
                                   title: Text(
                                     food.name,
                                     style: TextStyle(
@@ -157,7 +159,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                       color: Colors.brown,
                                     ),
                                   ),
-                                  // Tambahkan atribut-atribut lainnya seperti subtitle, gambar, dll.
                                 ),
                               );
                             }).toList(),
@@ -184,7 +185,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              // Icon(Icons.plate)
                             ],
                           ),
                           Padding(
@@ -196,8 +196,11 @@ class RestaurantDetailScreen extends StatelessWidget {
                           Column(
                             children: restaurant.menus.drinks.map((drink) {
                               return Card(
-                                // Atur atribut-atribut kartu sesuai kebutuhan
                                 child: ListTile(
+                                  leading: Icon(
+                                    Icons.local_drink_rounded,
+                                    color: Colors.blue[100],
+                                  ),
                                   title: Text(
                                     drink.name,
                                     style: TextStyle(
@@ -206,7 +209,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                       color: Colors.brown,
                                     ),
                                   ),
-                                  // Tambahkan atribut-atribut lainnya seperti subtitle, gambar, dll.
                                 ),
                               );
                             }).toList(),

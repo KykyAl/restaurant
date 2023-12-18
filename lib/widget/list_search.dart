@@ -49,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
           _isLoading = false;
         });
       } catch (e) {
-        print('Error searching restaurants: $e');
+        Text('Error searching restaurants: $e');
         setState(() {
           _isLoading = false;
         });
@@ -70,13 +70,23 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextField(
-                controller: _searchController,
-                onChanged: (query) {
-                  _performSearch(query);
-                },
-                decoration: InputDecoration(
-                  labelText: 'Cari....',
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (query) {
+                    _performSearch(query);
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Cari....',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  ),
                 ),
               ),
               SizedBox(height: 16.0),
@@ -127,7 +137,7 @@ class _SearchPageState extends State<SearchPage> {
                   width: 86.0,
                   child: ImgApi(
                     imageUrl:
-                        'https://restaurant-api.dicoding.dev/images/medium/${restaurantFoto.pictureId}',
+                        'https://restaurant-api.dicoding.dev/images/large/${restaurantFoto.pictureId}',
                   ),
                 ),
                 title: Text(

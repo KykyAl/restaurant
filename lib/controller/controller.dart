@@ -30,7 +30,6 @@ class RestaurantController extends GetxController {
   void onInit() {
     _fetchRestaurants();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-
     super.onInit();
   }
 
@@ -72,7 +71,6 @@ class RestaurantController extends GetxController {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.none) {
-      // No internet connection
       hasInternetConnection.value = false;
       return;
     }
@@ -82,7 +80,6 @@ class RestaurantController extends GetxController {
           await restaurantApi.getListOfRestaurants(Get.context!, []);
       restaurants = fetchedRestaurants.obs;
     } catch (e) {
-      // Failed to fetch restaurant data
       print('Error fetching restaurants: $e');
     }
   }
