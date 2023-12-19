@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/data/remote_model_detail.dart';
+import 'package:restauran_app/data/remote_model_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 
 class RestaurantController extends GetxController {
@@ -26,7 +27,7 @@ class RestaurantController extends GetxController {
   Rx<int> responseTime = 0.obs;
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
-  var isOnline = true.obs;
+  RxBool isOnline = true.obs;
 
   @override
   void onInit() {
@@ -39,16 +40,50 @@ class RestaurantController extends GetxController {
     super.onInit();
   }
 
+    final RxBool loading = false.obs;
+  final RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
+  final RxList<RestaurantModel> searchFoto = <RestaurantModel>[].obs;
+  final RxList<RestaurantDetailModel> searchDetail = <RestaurantDetailModel>[].obs;
+
+  Future<void> performSearch(String query) async {
+    if (query.isNotEmpty) {
+      loading.value = true;
+
+      try {
+        final results = await restaurantApi.searchRestaurants(query);
+        final fotoResults =
+            await restaurantApi.getListOfRestaurants(results.map((r) => r.id).toList());
+        final List<String?> restaurantIds = results.map((e) => e.id).toList();
+        final List<RestaurantDetailModel> details = [];
+
+        for (final restaurantId in restaurantIds) {
+          final detail = await restaurantApi.getRestaurantDetail(restaurantId!);
+          details.add(detail);
+        }
+
+        searchResults.assignAll(results);
+        searchFoto.assignAll(fotoResults);
+        searchDetail.assignAll(details);
+
+        loading.value = false;
+      } catch (e) {
+        print('Error searching restaurants: $e');
+        loading.value = false;
+      }
+    }
+  }
+
+
   RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = ''.obs;
 
-  void getListOfRestaurants() async {
+Future<void> getListOfRestaurants() async {
     try {
       isLoading(true);
-      var result = await restaurantApi.getListOfRestaurants([]);
-      restaurantList.assignAll(result);
+      var fetchedRestaurants = await restaurantApi.getListOfRestaurants([]);
+      restaurantList.assignAll(fetchedRestaurants);
     } catch (error) {
       isError(true);
       errorMessage('Error: $error');
@@ -110,7 +145,7 @@ class RestaurantController extends GetxController {
     );
   }
 
-  Future<void> _fetchRestaurants() async {
+   Future<void> _fetchRestaurants() async {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.none) {
@@ -124,11 +159,11 @@ class RestaurantController extends GetxController {
       restaurants = fetchedRestaurants.obs;
     } catch (e) {
       print('Error fetching restaurants: $e');
+      Get.snackbar('Error', 'Failed to fetch restaurants. Please try again.');
     }
   }
 
   Future<void> searchArea() async {
-    await Future.delayed(Duration.zero);
     List<RestaurantModel> listSearch = [];
 
     listSearch = listRestaurant

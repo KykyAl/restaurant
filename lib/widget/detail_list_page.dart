@@ -43,8 +43,10 @@ class RestaurantDetailScreen extends StatelessWidget {
                     Container(
                       color: Colors.grey[300],
                       child: ImgApi(
-                        imageUrl:
-                            'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                       imageUrl: restaurant?.pictureId != null
+    ? 'https://restaurant-api.dicoding.dev/images/medium/${restaurant?.pictureId}'
+    : 'https://placeholder-url.com/default-image.jpg',
+
                       ),
                     ),
                     Padding(
@@ -53,7 +55,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            restaurant.name,
+                            restaurant?.name ?? 'data bermasalah',
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -62,7 +64,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            restaurant.description,
+                            restaurant?.description ?? 'data bermasalah',
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               color: Colors.grey,
@@ -70,7 +72,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 16),
                           Text(
-                            'Kota : ${restaurant.city}',
+                            'Kota : ${restaurant?.city ?? 'data bermasalah'}',
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -80,7 +82,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                           SizedBox(
                             height: 5,
                           ),
-                          Text('Alamat : ${restaurant.address}'),
+                          Text('Alamat : ${restaurant?.address ?? 'data bermasalah'}'),
                           SizedBox(height: 11),
                           Row(
                             children: [
@@ -93,9 +95,9 @@ class RestaurantDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                  ' ${restaurant.categories.map((category) => category.name).join(', ')}'),
+                                  ' ${restaurant?.categories.map((category) => category.name).join(', ')}'),
                               SizedBox(width: 5),
-                              Text('${restaurant.rating}'),
+                              Text('${restaurant?.rating ?? 'data bermasalah'}'),
                               Icon(
                                 Icons.star,
                                 color: Colors.yellow,
@@ -146,7 +148,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Column(
-                            children: restaurant.menus.foods.map((food) {
+                            children: restaurant!.menus.foods.map((food) {
                               return Card(
                                 child: ListTile(
                                   leading: Icon(
