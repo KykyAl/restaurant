@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restauran_app/controller/controller.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/list_page.dart';
@@ -10,10 +10,10 @@ import 'package:restauran_app/widget/list_page.dart';
 class RestaurantDetailScreen extends StatelessWidget {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
+  final controller = Get.find<RestaurantController>();
+
   @override
   Widget build(BuildContext context) {
-    final String restaurantId = Get.arguments;
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -21,19 +21,21 @@ class RestaurantDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           backgroundColor: Colors.brown,
         ),
-        body: FutureBuilder<RestaurantDetailModel>(
-          future: restaurantApi.getRestaurantDetail(restaurantId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        body: Obx(
+          () {
+            if (controller.isLoading.isTrue) {
               return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
+            } else if (controller.isError.isTrue) {
               return NotFound(
                 codeError: '500',
-                message: 'An error occurred: ${snapshot.error}',
+                message: 'An error occurred: ${controller.errorMessage.value}',
               );
+            } else if (controller.restaurantDetail == null) {
+              return Center(child: Text('No Data'));
             } else {
-              final RestaurantDetailModel restaurant = snapshot.data!;
+              final restaurant = controller.restaurantDetail.value;
 
+              // Widget tree untuk menampilkan data restoran
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

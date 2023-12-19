@@ -32,8 +32,8 @@ class _SearchPageState extends State<SearchPage> {
 
       try {
         final results = await restaurantApi.searchRestaurants(query);
-        final fotoResults = await restaurantApi.getListOfRestaurants(
-            context, results.map((r) => r.id).toList());
+        final fotoResults = await restaurantApi
+            .getListOfRestaurants(results.map((r) => r.id).toList());
         final List<String?> restaurantIds = results.map((e) => e.id).toList();
         final List<RestaurantDetailModel> details = [];
 

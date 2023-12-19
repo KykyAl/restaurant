@@ -68,41 +68,40 @@ class ListPage extends StatelessWidget {
                 height: 10,
               ),
               Expanded(
-                child: FutureBuilder<List<RestaurantModel>>(
-                  future: restaurantApi.getListOfRestaurants(context, []),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return NotFound(
-                        codeError: '500',
-                        message: ' error : ${snapshot.error}',
-                      );
-                    } else if (snapshot.data == null ||
-                        snapshot.data!.isEmpty) {
-                      return NotFound(
-                        codeError: '404',
-                        message: ' restaurants tidak di temuakan',
-                      );
-                    } else {
-                      return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16.0,
-                          mainAxisSpacing: 16.0,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return _buildArticleItem(
-                            context,
-                            snapshot.data![index],
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
+                child: Obx(() {
+                  if (controller.isLoading.isTrue) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (controller.isError.isTrue) {
+                    return Center(
+                      child: Text('Error: ${controller.errorMessage.value}'),
+                    );
+                  } else if (!controller.isOnline.value) {
+                    return Center(
+                      child: Text('Tidak ada koneksi internet'),
+                    );
+                  } else if (controller.restaurantList.isEmpty) {
+                    return NotFound(
+                      codeError: '404',
+                      message: 'Restaurants tidak ditemukan',
+                    );
+                  } else {
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: controller.restaurantList.length,
+                      itemBuilder: (context, index) {
+                        return _buildArticleItem(
+                          context,
+                          controller.restaurantList[index],
+                        );
+                      },
+                    );
+                  }
+                }),
               ),
             ],
           ),

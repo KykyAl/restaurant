@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/data/remote_model_detail.dart';
@@ -23,18 +22,12 @@ class RemoteDatasource {
     }
   }
 
-  Future<List<RestaurantModel>> getListOfRestaurants(
-      BuildContext context, List<String?> list) async {
+  Future<List<RestaurantModel>> getListOfRestaurants(List<String?> list) async {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.none) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('No internet connection'),
-        ),
-      );
-
+      // Tidak ada koneksi internet, return pesan kesalahan
+      print('No internet connection');
       throw Exception('No internet connection');
     }
 
@@ -48,16 +41,13 @@ class RemoteDatasource {
           return RestaurantModel.fromJson(restaurant);
         }).toList();
       } else {
-        throw Exception('No internet connection');
+        // Gagal mendapatkan data, return pesan kesalahan
+        print('Error: ${response.statusCode}');
+        throw Exception('Error: ${response.statusCode}');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Error: $e'),
-        ),
-      );
-
+      // Gagal mendapatkan data, return pesan kesalahan
+      print('Error: $e');
       throw e;
     }
   }
