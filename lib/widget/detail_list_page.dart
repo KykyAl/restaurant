@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:restauran_app/controller/controller.dart';
+import 'package:restauran_app/controller/controller_detail.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
@@ -10,48 +11,74 @@ import 'package:restauran_app/widget/list_page.dart';
 class RestaurantDetailScreen extends StatelessWidget {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
-  final controller = Get.find<RestaurantController>();
+  final controller = Get.find<RestaurantDetailController>();
 
   @override
   Widget build(BuildContext context) {
+    final arguments = Get.arguments;
+    controller.fetchRestaurantDetail(arguments['id']);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Pencarian Restoran',
+          title: const Text('Detail Restoran',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           backgroundColor: Colors.brown,
         ),
         body: Obx(
           () {
-            if (controller.isLoading.isTrue) {
+            if (controller.isLoadingDetail.isTrue) {
               return Center(child: CircularProgressIndicator());
             } else if (controller.isError.isTrue) {
               return NotFound(
                 codeError: '500',
-                message: 'An error occurred: ${controller.errorMessage.value}',
+                message:
+                    'An error occurred: ${controller.errorMessageDetail.value}',
               );
-            } else if (controller.restaurantDetail == null) {
-              return Center(child: Text('No Data'));
+            } else if (controller.restaurantDetail.value == null) {
+              return NotFound(
+                codeError: '500',
+                message:
+                    'An error occurred: ${controller.errorMessageDetail.value}',
+              );
             } else {
               final restaurant = controller.restaurantDetail.value;
 
-              // Widget tree untuk menampilkan data restoran
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 200,
                       color: Colors.grey[300],
-                      child: ImgApi(
-                        imageUrl:
-                            'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Stack(
                         children: [
+                          BlurHash(
+                            hash:
+                                r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
+                            image:
+                                'https://restaurant-api.dicoding.dev/images/large/${restaurant!.pictureId}',
+                            imageFit: BoxFit.cover,
+                          ),
+                          Positioned.fill(
+                            child: ImgApi(
+                              imageUrl:
+                                  'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      //  ImgApi(
+                      //   imageUrl:
+                      //       'https://restaurant-api.dicoding.dev/images/medium/${restaurant!.pictureId}',
+                      // ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16.0),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
                           Text(
                             restaurant.name,
                             style: GoogleFonts.playfairDisplay(
@@ -120,12 +147,15 @@ class RestaurantDetailScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.restaurant),
+                              Icon(
+                                Icons.restaurant,
+                                color: Colors.red,
+                              ),
                               SizedBox(
                                 width: 15,
                               ),
@@ -166,26 +196,25 @@ class RestaurantDetailScreen extends StatelessWidget {
                             }).toList(),
                           ),
                           SizedBox(
-                            height: 20,
+                            height: 25,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.local_drink),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text(
-                                    'Minuman',
-                                    style: GoogleFonts.openSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.brown,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.local_drink,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                'Minuman',
+                                style: GoogleFonts.openSans(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.brown,
+                                ),
                               ),
                             ],
                           ),
@@ -197,7 +226,20 @@ class RestaurantDetailScreen extends StatelessWidget {
                           ),
                           Column(
                             children: restaurant.menus.drinks.map((drink) {
-                              return Card(
+                              return Container(
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
                                 child: ListTile(
                                   leading: Icon(
                                     Icons.local_drink_rounded,
@@ -215,75 +257,97 @@ class RestaurantDetailScreen extends StatelessWidget {
                               );
                             }).toList(),
                           ),
-                          SizedBox(height: 16),
-                          Center(
-                            child: Text(
-                              'Customer Reviews:',
-                              style: GoogleFonts.playfairDisplay(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.brown,
-                              ),
-                            ),
+                          SizedBox(
+                            height: 25,
                           ),
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 8.0,
-                              mainAxisSpacing: 8.0,
-                            ),
-                            itemCount: restaurant.customerReviews.length,
-                            itemBuilder: (context, index) {
-                              var review = restaurant.customerReviews[index];
-                              return Card(
-                                elevation: 3,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 4),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.comment),
-                                      Text(
-                                        '${review.name}',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.brown,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        '${review.review}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'Date: ${review.date}',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.comment_sharp),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Komenan',
+                                style: GoogleFonts.openSans(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.brown,
                                 ),
-                              );
-                            },
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20, left: 20),
+                            child: Divider(
+                              thickness: 1,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(10.0),
+                    sliver: SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          var review = restaurant.customerReviews[index];
+                          return Card(
+                            elevation: 3,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 4),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.comment),
+                                  Expanded(
+                                    child: Text(
+                                      '${review.name}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.brown,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Expanded(
+                                    child: Text(
+                                      '${review.review}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Expanded(
+                                    child: Text(
+                                      ' ${review.date}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: restaurant.customerReviews.length,
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
           },

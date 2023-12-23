@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 
 class NotFound extends StatelessWidget {
@@ -44,8 +45,11 @@ class NotFound extends StatelessWidget {
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
-                      onPressed: () =>
-                          Get.offAndToNamed(_navigatorHelper.listPage),
+                      onPressed: () {
+                        Get.find<RestaurantController>().onInit();
+
+                        Get.offAllNamed(_navigatorHelper.listPage);
+                      },
                       child: Text('Mulai ulang Aplikasi')),
                 )
               ],

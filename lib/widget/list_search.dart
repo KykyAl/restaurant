@@ -1,69 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
+import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/list_page.dart';
 
-class SearchPage extends StatefulWidget {
-  @override
-  _SearchPageState createState() => _SearchPageState();
-}
-
-class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _searchController = TextEditingController();
+class SearchPage extends GetView<RestaurantController> {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
-
-  bool _isLoading = false;
-
-  List<RestaurantSearchModel> _searchResults = [];
-  List<RestaurantModel> _searchFoto = [];
-  List<RestaurantDetailModel> _searchDetail = [];
-
-  void _performSearch(String query) async {
-    if (query.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        final results = await restaurantApi.searchRestaurants(query);
-        final fotoResults = await restaurantApi
-            .getListOfRestaurants(results.map((r) => r.id).toList());
-        final List<String?> restaurantIds = results.map((e) => e.id).toList();
-        final List<RestaurantDetailModel> details = [];
-
-        for (final restaurantId in restaurantIds) {
-          final detail = await restaurantApi.getRestaurantDetail(restaurantId!);
-          details.add(detail);
-        }
-
-        setState(() {
-          _searchResults = results;
-          _searchFoto = fotoResults;
-          _searchDetail = details;
-          _isLoading = false;
-        });
-      } catch (e) {
-        Text('Error searching restaurants: $e');
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
+  final searchController = Get.find<RestaurantController>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Pencarian',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          title: Text(
+            'Pencarian',
+            style: GoogleFonts.abrilFatface(
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
           backgroundColor: Colors.brown,
         ),
         body: Padding(
@@ -76,9 +37,9 @@ class _SearchPageState extends State<SearchPage> {
                   border: Border.all(color: Colors.grey),
                 ),
                 child: TextField(
-                  controller: _searchController,
                   onChanged: (query) {
-                    _performSearch(query);
+                    searchController.searchQuery.value = query;
+                    searchController.performSearch();
                   },
                   decoration: InputDecoration(
                     labelText: 'Cari....',
@@ -90,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               SizedBox(height: 16.0),
-              _buildSearchResults(),
+              Obx(() => _buildSearchResults(searchController)),
             ],
           ),
         ),
@@ -98,24 +59,23 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchResults() {
-    if (_isLoading) {
+  Widget _buildSearchResults(RestaurantController controller) {
+    if (!controller.isInternetConnected.value) {
+      return NotFound(
+          codeError: '500',
+          message: 'An error occurred: ${controller.isError.value}');
+    } else if (controller.isLoading.value) {
       return Center(
         child: CircularProgressIndicator(),
-      );
-    } else if (_searchResults.isEmpty) {
-      return Text(
-        'Tidak ditemukan hasil.',
-        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
       );
     } else {
       return Expanded(
         child: ListView.builder(
-          itemCount: _searchResults.length,
+          itemCount: controller.searchResults.length,
           itemBuilder: (context, index) {
-            final restaurantFoto = _searchFoto[index];
-            final restaurantList = _searchResults[index];
-            final restauranDetail = _searchDetail[index];
+            final restaurantFoto = controller.searchFoto[index];
+            final restaurantList = controller.searchResults[index];
+            final restauranDetail = controller.searchDetail[index];
 
             return Container(
               margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -179,7 +139,7 @@ class _SearchPageState extends State<SearchPage> {
                 onTap: () {
                   Get.toNamed(
                     navigatorHelper.detailPage,
-                    arguments: restaurantList.id.toString(),
+                    arguments: {"id": restaurantList.id},
                   );
                 },
               ),
