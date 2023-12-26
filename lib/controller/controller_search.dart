@@ -12,7 +12,6 @@ import 'package:restauran_app/helper/navigator_helper.dart';
 class RestaurantSearchController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
-  final Connectivity _connectivity = Connectivity();
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
@@ -47,6 +46,7 @@ class RestaurantSearchController extends GetxController {
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = ''.obs;
+
   void getListOfRestaurants() async {
     try {
       isLoading(true);
