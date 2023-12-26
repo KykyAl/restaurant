@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:restauran_app/controller/controller_page.dart';
+import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/list_page.dart';
 
-class SearchPage extends GetView<RestaurantController> {
+class SearchPage extends GetView<RestaurantSearchController> {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
-  final searchController = Get.find<RestaurantController>();
+  final searchController = Get.find<RestaurantSearchController>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,24 +59,23 @@ class SearchPage extends GetView<RestaurantController> {
     );
   }
 
-  Widget _buildSearchResults(RestaurantController controller) {
-    if (!controller.isInternetConnected.value) {
+  Widget _buildSearchResults(RestaurantSearchController searchController) {
+    if (!searchController.isInternetConnected.value) {
       return NotFound(
           codeError: '500',
-          message: 'An error occurred: ${controller.isError.value}');
-    } else if (controller.isLoading.value) {
+          message: 'An error occurred: ${searchController.isError.value}');
+    } else if (searchController.isLoading.value) {
       return Center(
         child: CircularProgressIndicator(),
       );
     } else {
       return Expanded(
         child: ListView.builder(
-          itemCount: controller.searchResults.length,
+          itemCount: searchController.searchResults.length,
           itemBuilder: (context, index) {
-            final restaurantFoto = controller.searchFoto[index];
-            final restaurantList = controller.searchResults[index];
-            final restauranDetail = controller.searchDetail[index];
-
+            // final restaurantFoto = searchController.searchFoto[index];
+            final restaurantList = searchController.searchResults[index];
+            final restauranDetail = searchController.searchDetail[index];
             return Container(
               margin: EdgeInsets.symmetric(vertical: 8.0),
               padding: EdgeInsets.all(16.0),
@@ -97,7 +96,7 @@ class SearchPage extends GetView<RestaurantController> {
                   width: 86.0,
                   child: ImgApi(
                     imageUrl:
-                        'https://restaurant-api.dicoding.dev/images/large/${restaurantFoto.pictureId}',
+                        'https://restaurant-api.dicoding.dev/images/large/${restauranDetail.pictureId}',
                   ),
                 ),
                 title: Text(
