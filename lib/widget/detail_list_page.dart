@@ -279,7 +279,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w800,
                                   color: Colors.brown,
                                 ),
-                              ),
+                              )
                             ],
                           ),
                           Padding(
