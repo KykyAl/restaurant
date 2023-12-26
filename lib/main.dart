@@ -2,15 +2,16 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:restauran_app/controller/controller.dart';
-import 'package:restauran_app/detail_list_page.dart';
+import 'package:restauran_app/controller/controller_detail.dart';
+import 'package:restauran_app/controller/controller_page.dart';
+import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/list_page.dart';
-import 'package:restauran_app/list_search.dart';
+import 'package:restauran_app/widget/detail_list_page.dart';
+import 'package:restauran_app/widget/list_page.dart';
+import 'package:restauran_app/widget/list_search.dart';
 
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();
-
   runApp(RestauranApp());
 }
 
@@ -28,7 +29,7 @@ class RestauranApp extends StatelessWidget {
       ),
       initialBinding: Dependency(),
       getPages: [
-        GetPage(name: navigatorHelper.app, page: () => RestauranApp()),
+        GetPage(name: navigatorHelper.root, page: () => RestauranApp()),
         GetPage(
           name: navigatorHelper.listPage,
           page: () => ListPage(),
@@ -41,6 +42,7 @@ class RestauranApp extends StatelessWidget {
           name: navigatorHelper.searchPage,
           page: () => SearchPage(),
         ),
+        GetPage(name: navigatorHelper.splashScreen, page: () => SplashScreen())
       ],
       home: SplashScreen(),
     );
@@ -54,6 +56,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  final controller = Get.find<RestaurantController>();
   late AnimationController _controller;
 
   @override
@@ -62,16 +65,12 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-
-    // ... kode initState lainnya
-
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller
-        .dispose(); // Memastikan untuk membuang Ticker bersamaan dengan AnimationController
+    _controller.dispose();
     super.dispose();
   }
 
@@ -79,7 +78,6 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSplashScreen(
-        duration: 3000,
         splash: SpinKitWave(
           controller: _controller,
           color: Colors.brown,
@@ -97,5 +95,7 @@ class Dependency implements Bindings {
   @override
   void dependencies() {
     Get.put<RestaurantController>(RestaurantController());
+    Get.put<RestaurantDetailController>(RestaurantDetailController());
+    Get.put<RestaurantSearchController>(RestaurantSearchController());
   }
 }

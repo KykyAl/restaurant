@@ -11,8 +11,7 @@ class RestaurantSearchModel {
     required this.description,
     required this.pictureId,
     required this.city,
-    this.rating =
-        0.0, // Inisialisasi dengan nilai default, sesuaikan dengan kebutuhan Anda
+    this.rating = 0.0,
   });
 
   RestaurantSearchModel.fromJson(dynamic json) {
@@ -21,8 +20,7 @@ class RestaurantSearchModel {
     description = json["description"];
     pictureId = json["pictureId"];
     city = json["city"];
-    rating = (json["rating"] ?? 0.0)
-        .toDouble(); // Handling nilai null dan konversi ke double
+    rating = (json["rating"] ?? 0.0).toDouble();
   }
 
   Map<String, dynamic> toJson() {

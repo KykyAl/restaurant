@@ -1,4 +1,3 @@
-// restaurant_model.dart
 class RestaurantDetailModel {
   final String id;
   final String name;
@@ -40,7 +39,6 @@ class Menus {
 
 class MenuItem {
   final String name;
-
   MenuItem({required this.name});
 }
 

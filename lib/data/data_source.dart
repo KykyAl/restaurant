@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/data/remote_model_detail.dart';
@@ -9,41 +10,46 @@ import 'package:restauran_app/data/remote_model_search.dart';
 class RemoteDatasource {
   final _BASE_URL = "https://restaurant-api.dicoding.dev/";
 
-  Future<http.Response> listRestorant({RestaurantModel? body}) async {
-    try {
-      final response = await http.post(
-        Uri.parse("$_BASE_URL"),
-        body: jsonEncode(body!.toJson()),
-      );
-      return response;
-    } catch (e) {
-      rethrow;
+  Future<List<RestaurantModel>> fetchRestaurantData(List<String?> list) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print('No internet connection');
+      throw Exception('No internet connection');
     }
-  }
 
-  Future<List<RestaurantModel>> getListOfRestaurants(List<String?> list) async {
-    final response = await http.get(Uri.parse('$_BASE_URL/list'));
+    try {
+      final response = await http.get(Uri.parse('$_BASE_URL/list'));
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final List<dynamic> restaurantsData = data['restaurants'];
-      return restaurantsData.map((restaurant) {
-        return RestaurantModel.fromJson(restaurant);
-      }).toList();
-    } else {
-      throw Exception('Failed to load restaurants');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> restaurantsData = data['restaurants'];
+        log(' ${restaurantsData}');
+        return restaurantsData.map((restaurant) {
+          return RestaurantModel.fromJson(restaurant);
+        }).toList();
+      } else {
+        print('Error: ${response.statusCode}');
+        throw Exception(' ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e;
     }
   }
 
   Future<RestaurantDetailModel> getRestaurantDetail(String restaurantId) async {
     final url = '$_BASE_URL/detail/$restaurantId';
-
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    }
     try {
       final response = await http.get(Uri.parse(url));
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final restaurantData = data['restaurant'];
+        log('restauran :${restaurantData}');
         return RestaurantDetailModel(
           id: restaurantData['id'],
           name: restaurantData['name'],
@@ -72,29 +78,34 @@ class RemoteDatasource {
               .toList(),
         );
       } else {
-        throw Exception('Failed to load restaurant detail');
+        throw Exception('pembaruan data');
       }
     } catch (e) {
+      log('Error: $e');
       throw Exception('Error: $e');
     }
   }
 
   Future<List<RestaurantSearchModel>> searchRestaurants(String query) async {
     final response = await http.get(Uri.parse('$_BASE_URL/search?q=$query'));
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    }
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
-      log("search${data}");
       if (!data['error']) {
         final List<dynamic> restaurantData = data['restaurants'];
         return restaurantData
             .map((json) => RestaurantSearchModel.fromJson(json))
             .toList();
       } else {
-        throw Exception('Failed to load restaurants');
+        throw Exception('No internet connection');
       }
     } else {
-      throw Exception('Failed to load restaurants');
+      throw Exception('No internet connection');
     }
   }
 }
