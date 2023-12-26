@@ -67,11 +67,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      //  ImgApi(
-                      //   imageUrl:
-                      //       'https://restaurant-api.dicoding.dev/images/medium/${restaurant!.pictureId}',
-                      // ),
                     ),
                   ),
                   SliverPadding(
@@ -120,13 +115,23 @@ class RestaurantDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                  ' ${restaurant.categories.map((category) => category.name).join(', ')}'),
+                                ' ${restaurant.categories.map((category) => category.name).join(', ')}',
+                              ),
                               SizedBox(width: 5),
+                              Row(
+                                children: List.generate(
+                                  restaurant.rating.floor(),
+                                  (index) => Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Text('${restaurant.rating}'),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              )
                             ],
                           ),
                           SizedBox(height: 25),
@@ -268,7 +273,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                                 width: 10,
                               ),
                               Text(
-                                'Komenan',
+                                'Kometar',
                                 style: GoogleFonts.openSans(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w800,
@@ -303,11 +308,14 @@ class RestaurantDetailScreen extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 4),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(5.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.comment),
+                                  Icon(
+                                    Icons.comment,
+                                    size: 15.0,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       '${review.name}',
@@ -318,24 +326,23 @@ class RestaurantDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 4),
                                   Expanded(
-                                    child: Text(
-                                      '${review.review}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey,
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        '${review.review}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ),
                                   SizedBox(height: 4),
-                                  Expanded(
-                                    child: Text(
-                                      ' ${review.date}',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
+                                  Text(
+                                    ' ${review.date}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
                                     ),
                                   ),
                                 ],

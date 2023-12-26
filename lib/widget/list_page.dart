@@ -231,8 +231,22 @@ class ImgApi extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder: (context, url) =>
             Center(child: CircularProgressIndicator()),
-        errorWidget: (context, url, error) =>
-            const Center(child: Icon(Icons.error)),
+        errorWidget: (context, url, error) => Container(
+          color: Colors.grey,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error, size: 40, color: Colors.white),
+                SizedBox(height: 8),
+                Text(
+                  'Gagal memuat gambar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

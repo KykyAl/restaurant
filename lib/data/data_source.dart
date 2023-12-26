@@ -39,6 +39,11 @@ class RemoteDatasource {
 
   Future<RestaurantDetailModel> getRestaurantDetail(String restaurantId) async {
     final url = '$_BASE_URL/detail/$restaurantId';
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    }
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -83,6 +88,11 @@ class RemoteDatasource {
 
   Future<List<RestaurantSearchModel>> searchRestaurants(String query) async {
     final response = await http.get(Uri.parse('$_BASE_URL/search?q=$query'));
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    }
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
