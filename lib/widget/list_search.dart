@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/list_page.dart';
 
@@ -61,9 +60,10 @@ class SearchPage extends GetView<RestaurantSearchController> {
 
   Widget _buildSearchResults(RestaurantSearchController searchController) {
     if (!searchController.isInternetConnected.value) {
-      return NotFound(
-          codeError: '500',
-          message: 'An error occurred: ${searchController.isError.value}');
+      return Center(
+          child: Text(
+        'Tidak ada koneksi internet',
+      ));
     } else if (searchController.isLoading.value) {
       return Center(
         child: CircularProgressIndicator(),

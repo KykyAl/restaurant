@@ -31,15 +31,31 @@ class RestaurantController extends GetxController {
 
   var isOnline = true.obs;
 
+  final RxBool isOnlineRx = true.obs;
+
   @override
   void onInit() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      isOnline.value = (result != ConnectivityResult.none);
-    });
+    super.onInit();
+    checkConnectionStatus();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    ever(isOnlineRx, (_) {
+      if (!isOnlineRx.value) {
+        showPopup.value = true;
+        dialog();
+      }
+    });
     getListOfRestaurants();
     performSearch();
-    super.onInit();
+  }
+
+  void checkConnectionStatus() async {
+    try {
+      var response =
+          await GetConnect().get('https://restaurant-api.dicoding.dev/list');
+      isOnlineRx.value = response.statusCode == 200;
+    } catch (e) {
+      isOnlineRx.value = false;
+    }
   }
 
   RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
@@ -67,9 +83,11 @@ class RestaurantController extends GetxController {
         dialog();
       }
       icons.value = Icons.wifi_1_bar;
+      color.value = Colors.red;
     } else {
       connectionStatus.value = true;
       showPopup.value = false;
+      Get.back();
     }
   }
 
@@ -78,7 +96,7 @@ class RestaurantController extends GetxController {
     return connectivityResult != ConnectivityResult.none;
   }
 
-  Future<void> loadData() async {
+  void loadData() async {
     try {
       isLoading.value = true;
 
@@ -89,9 +107,16 @@ class RestaurantController extends GetxController {
       }
     } catch (e) {
       print('Error loading data: $e');
+
+      Get.snackbar(
+        'Error',
+        'Failed to load data. Please check your internet connection.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
+      );
     } finally {
       isLoading.value = false;
-      if (!isLoading.value) {
+      if (!isLoading.value && isOnline.value) {
         loadData();
       }
     }
