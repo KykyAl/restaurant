@@ -76,7 +76,10 @@ class ListPage extends GetWidget<RestaurantController> {
                   if (controller.isLoading.isTrue) {
                     return Center(child: CircularProgressIndicator());
                   } else if (!controller.isOnline.value) {
-                    return Center(child: Text('Tidak ada koneksi internet'));
+                    return Center(
+                        child: Text(
+                      'Tidak ada koneksi internet',
+                    ));
                   } else if (controller.restaurantList.isEmpty) {
                     return NotFound(
                       codeError: '500',
