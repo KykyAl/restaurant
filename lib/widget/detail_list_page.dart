@@ -16,8 +16,17 @@ class RestaurantDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final arguments = Get.arguments;
-    controller.fetchRestaurantDetail(arguments['id']);
 
+    // Check if arguments is not null and contains the key 'id'
+    final restaurantId = arguments != null ? arguments['id'] : null;
+
+    // Check if restaurantId is not null before calling fetchRestaurantDetail
+    if (restaurantId != null) {
+      controller.fetchRestaurantDetail(restaurantId);
+    } else {
+      // Handle the case when 'id' is not present or arguments is null
+      print('Error: No valid ID found in arguments');
+    }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -196,6 +205,12 @@ class RestaurantDetailScreen extends StatelessWidget {
                                       color: Colors.brown,
                                     ),
                                   ),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.add_shopping_cart),
+                                    onPressed: () {
+                                      controller.addToCart(context, food);
+                                    },
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -232,34 +247,40 @@ class RestaurantDetailScreen extends StatelessWidget {
                           Column(
                             children: restaurant.menus.drinks.map((drink) {
                               return Container(
-                                margin: const EdgeInsets.symmetric(vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: ListTile(
-                                  leading: Icon(
-                                    Icons.local_drink_rounded,
-                                    color: Colors.blue[100],
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  title: Text(
-                                    drink.name,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.brown,
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.local_drink_rounded,
+                                      color: Colors.blue[100],
                                     ),
-                                  ),
-                                ),
-                              );
+                                    title: Text(
+                                      drink.name,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.brown,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.add_shopping_cart),
+                                      onPressed: () {
+                                        controller.addToCart(context, drink);
+                                      },
+                                    ),
+                                  ));
                             }).toList(),
                           ),
                           SizedBox(
@@ -358,6 +379,10 @@ class RestaurantDetailScreen extends StatelessWidget {
               );
             }
           },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.shopping_cart),
         ),
       ),
     );

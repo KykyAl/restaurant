@@ -41,71 +41,78 @@ class ListPage extends GetWidget<RestaurantController> {
             ),
           ],
         ),
-        body: Container(
-          color: Color.fromARGB(230, 34, 33, 33),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 55,
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Hitsss',
-                      style: GoogleFonts.abrilFatface(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.yellowAccent,
-                      ),
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            return Container(
+              color: Color.fromARGB(230, 34, 33, 33),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.only(left: 20, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Hitsss',
+                          style: GoogleFonts.abrilFatface(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.yellowAccent,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.thunderstorm_outlined,
+                          color: Colors.blue,
+                        )
+                      ],
                     ),
-                    const Icon(
-                      Icons.thunderstorm_outlined,
-                      color: Colors.blue,
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                child: Obx(() {
-                  if (controller.isLoading.isTrue) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (!controller.isOnline.value) {
-                    return Center(
-                        child: Text(
-                      'Tidak ada koneksi internet',
-                    ));
-                  } else if (controller.restaurantList.isEmpty) {
-                    return NotFound(
-                      codeError: '500',
-                      message: 'An error occurred: ${controller.isError.value}',
-                    );
-                  } else {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 16.0,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemCount: controller.restaurantList.length,
-                      itemBuilder: (context, index) {
-                        return _buildArticleItem(
-                          context,
-                          controller.restaurantList[index],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.isLoading.isTrue) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (!controller.isOnline.value) {
+                        return Center(
+                          child: Text('Tidak ada koneksi internet'),
                         );
-                      },
-                    );
-                  }
-                }),
+                      } else if (controller.restaurantList.isEmpty) {
+                        return NotFound(
+                          codeError: '500',
+                          message:
+                              'An error occurred: ${controller.isError.value}',
+                        );
+                      } else {
+                        return GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount:
+                                orientation == Orientation.portrait ? 2 : 2,
+                            crossAxisSpacing: 16.0,
+                            mainAxisSpacing: 16.0,
+                            childAspectRatio:
+                                orientation == Orientation.portrait ? 0.7 : 1.0,
+                          ),
+                          itemCount: controller.restaurantList.length,
+                          itemBuilder: (context, index) {
+                            return _buildArticleItem(
+                              context,
+                              controller.restaurantList[index],
+                            );
+                          },
+                        );
+                      }
+                    }),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/data/remote_model_detail.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/widget/addChart.dart';
 
 class RestaurantDetailController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
@@ -102,5 +103,15 @@ class RestaurantDetailController extends GetxController {
     } finally {
       isLoadingDetail(false);
     }
+  }
+
+  void addToCart(BuildContext context, food) {
+    ShoppingCart().items.add(CartItem(name: food.name, price: 1.0));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${food.name} added to the cart'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

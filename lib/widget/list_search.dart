@@ -15,6 +15,8 @@ class SearchPage extends GetView<RestaurantSearchController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false, // Atau true, sesuai kebutuhan
+
         appBar: AppBar(
           title: Text(
             'Pencarian',
@@ -31,25 +33,28 @@ class SearchPage extends GetView<RestaurantSearchController> {
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: TextField(
-                  onChanged: (query) {
-                    searchController.searchQuery.value = query;
-                    searchController.performSearch();
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Cari....',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(color: Colors.grey),
                   ),
-                ),
-              ),
-              SizedBox(height: 16.0),
+                  child: TextField(
+                    onChanged: (query) {
+                      searchController.searchQuery.value = query;
+                      searchController.performSearch();
+                    },
+                    style: TextStyle(fontSize: 14.0),
+                    decoration: InputDecoration(
+                      labelText: 'Cari....',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05,
+                        vertical: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                    ),
+                  )),
+              SizedBox(height: 10.0),
               Obx(() => _buildSearchResults(searchController)),
             ],
           ),
@@ -61,23 +66,32 @@ class SearchPage extends GetView<RestaurantSearchController> {
   Widget _buildSearchResults(RestaurantSearchController searchController) {
     if (!searchController.isInternetConnected.value) {
       return Center(
-          child: Text(
-        'Tidak ada koneksi internet',
-      ));
-    } else if (searchController.isLoading.value) {
+        child: Text('Tidak ada koneksi internet'),
+      );
+    } else if (searchController.isLoadingSearch.value) {
       return Center(
         child: CircularProgressIndicator(),
       );
     } else {
+      final searchResults = searchController.searchResults;
+      if (searchResults.isEmpty) {
+        return Center(
+          child: Text('Tidak ditemukan'),
+        );
+      }
+
       return Expanded(
         child: ListView.builder(
+          shrinkWrap: true,
           itemCount: searchController.searchResults.length,
           itemBuilder: (context, index) {
             // final restaurantFoto = searchController.searchFoto[index];
             final restaurantList = searchController.searchResults[index];
             final restauranDetail = searchController.searchDetail[index];
             return Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0),
+              margin: EdgeInsets.symmetric(
+                vertical: 8.0,
+              ),
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white,

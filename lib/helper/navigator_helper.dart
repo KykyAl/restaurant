@@ -6,5 +6,5 @@ class NavigatorHelper {
   String searchPage = "/SearchPage";
   String splashScreen = "/SplashScreen";
   String notFound = "/NoutFound";
+  String cardScreen = "/CardScreen";
 }
-
