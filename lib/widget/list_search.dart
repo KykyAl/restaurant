@@ -15,8 +15,7 @@ class SearchPage extends GetView<RestaurantSearchController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false, // Atau true, sesuai kebutuhan
-
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             'Pencarian',
@@ -28,36 +27,48 @@ class SearchPage extends GetView<RestaurantSearchController> {
           ),
           backgroundColor: Colors.brown,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: TextField(
-                    onChanged: (query) {
-                      searchController.searchQuery.value = query;
-                      searchController.performSearch();
-                    },
-                    style: TextStyle(fontSize: 14.0),
-                    decoration: InputDecoration(
-                      labelText: 'Cari....',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05,
-                        vertical: MediaQuery.of(context).size.height * 0.02,
+        body: Column(
+          children: [
+            SizedBox(
+              height: 8.0,
+            ),
+            Container(
+              margin: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      onChanged: (query) {
+                        searchController.searchQuery.value = query;
+                      },
+                      style: TextStyle(fontSize: 14.0),
+                      decoration: InputDecoration(
+                        labelText: 'Cari....',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                          vertical: MediaQuery.of(context).size.height * 0.02,
+                        ),
                       ),
                     ),
-                  )),
-              SizedBox(height: 10.0),
-              Obx(() => _buildSearchResults(searchController)),
-            ],
-          ),
+                  ),
+                  IconButton(
+                    color: Colors.green,
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      searchController.performSearch();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Obx(() {
+              return _buildSearchResults(searchController);
+            }),
+          ],
         ),
       ),
     );
@@ -85,7 +96,6 @@ class SearchPage extends GetView<RestaurantSearchController> {
           shrinkWrap: true,
           itemCount: searchController.searchResults.length,
           itemBuilder: (context, index) {
-            // final restaurantFoto = searchController.searchFoto[index];
             final restaurantList = searchController.searchResults[index];
             final restauranDetail = searchController.searchDetail[index];
             return Container(
