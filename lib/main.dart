@@ -6,6 +6,7 @@ import 'package:restauran_app/controller/controller_detail.dart';
 import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/widget/card_screen.dart';
 import 'package:restauran_app/widget/detail_list_page.dart';
 import 'package:restauran_app/widget/list_page.dart';
 import 'package:restauran_app/widget/list_search.dart';
@@ -42,7 +43,8 @@ class RestauranApp extends StatelessWidget {
           name: navigatorHelper.searchPage,
           page: () => SearchPage(),
         ),
-        GetPage(name: navigatorHelper.splashScreen, page: () => SplashScreen())
+        GetPage(name: navigatorHelper.splashScreen, page: () => SplashScreen()),
+        GetPage(name: navigatorHelper.cardScreen, page: () => CartScreen())
       ],
       home: SplashScreen(),
     );

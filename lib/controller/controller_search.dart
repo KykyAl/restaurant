@@ -83,6 +83,7 @@ class RestaurantSearchController extends GetxController {
           details.add(detail);
         }
 
+        // Tampilkan hasil pencarian
         searchResults.assignAll(results);
         searchFoto.assignAll(fotoResults);
         log('FOTO RESULT: ${searchFoto}');
