@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
@@ -8,10 +7,13 @@ import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/widget/image.dart';
 
 class ListPage extends GetWidget<RestaurantController> {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,7 +81,13 @@ class ListPage extends GetWidget<RestaurantController> {
                         return Center(child: CircularProgressIndicator());
                       } else if (!controller.isOnline.value) {
                         return Center(
-                          child: Text('Tidak ada koneksi internet'),
+                          child: Text(
+                            'Tidak ada koneksi internet',
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.yellow),
+                          ),
                         );
                       } else if (controller.restaurantList.isEmpty) {
                         return NotFound(
@@ -148,6 +156,7 @@ class ListPage extends GetWidget<RestaurantController> {
                     child: ImgApi(
                       imageUrl:
                           'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
+                      scaffoldKey: _scaffoldKey,
                     ),
                   ),
                 ],
@@ -219,43 +228,6 @@ class ListPage extends GetWidget<RestaurantController> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ImgApi extends StatelessWidget {
-  final String imageUrl;
-
-  const ImgApi({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5.0),
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        width: double.infinity,
-        height: 190.0,
-        fit: BoxFit.cover,
-        placeholder: (context, url) =>
-            Center(child: CircularProgressIndicator()),
-        errorWidget: (context, url, error) => Container(
-          color: Colors.grey,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error, size: 40, color: Colors.white),
-                SizedBox(height: 8),
-                Text(
-                  'Gagal memuat gambar',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

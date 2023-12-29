@@ -99,10 +99,20 @@ class RestaurantDetailController extends GetxController {
       restaurantDetail.value = result;
     } catch (error) {
       isErrorDetail(true);
-      errorMessageDetail('Error: $error');
+      final errorMessage = 'Koneksi Anda Terpustus!!!.';
+      showSnackbar(Get.context!, errorMessage);
     } finally {
       isLoadingDetail(false);
     }
+  }
+
+  void showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void addToCart(BuildContext context, food) {

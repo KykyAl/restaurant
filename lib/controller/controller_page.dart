@@ -38,12 +38,7 @@ class RestaurantController extends GetxController {
     super.onInit();
     checkConnectionStatus();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-    ever(isOnlineRx, (_) {
-      if (!isOnlineRx.value) {
-        showPopup.value = true;
-        dialog();
-      }
-    });
+
     getListOfRestaurants();
     performSearch();
   }
@@ -53,9 +48,23 @@ class RestaurantController extends GetxController {
       var response =
           await GetConnect().get('https://restaurant-api.dicoding.dev/list');
       isOnlineRx.value = response.statusCode == 200;
+      if (!isOnlineRx.value) {
+        showNoInternetSnackbar();
+      }
     } catch (e) {
       isOnlineRx.value = false;
+      showNoInternetSnackbar();
     }
+  }
+
+  void showNoInternetSnackbar() {
+    final snackBar = SnackBar(
+      content: Text('No internet connection'),
+      duration: Duration(seconds: 3),
+    );
+
+    // Menampilkan snackbar menggunakan context saat ini
+    ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);
   }
 
   RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
@@ -87,7 +96,6 @@ class RestaurantController extends GetxController {
     } else {
       connectionStatus.value = true;
       showPopup.value = false;
-      Get.back();
     }
   }
 
@@ -208,10 +216,20 @@ class RestaurantController extends GetxController {
         searchFoto.assignAll(fotoResults);
         searchDetail.assignAll(details);
       } catch (e) {
-        print('Error searching restaurants: $e');
+        final errorMessage = 'Koneksi Anda Terpustus!!!.';
+        showSnackbar(Get.context!, errorMessage);
       } finally {
         isLoadingSearch(false);
       }
     }
+  }
+
+  void showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -4,12 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/widget/list_page.dart';
+import 'package:restauran_app/widget/image.dart';
 
 class SearchPage extends GetView<RestaurantSearchController> {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final searchController = Get.find<RestaurantSearchController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +122,7 @@ class SearchPage extends GetView<RestaurantSearchController> {
                   child: ImgApi(
                     imageUrl:
                         'https://restaurant-api.dicoding.dev/images/large/${restauranDetail.pictureId}',
+                    scaffoldKey: _scaffoldKey,
                   ),
                 ),
                 title: Text(

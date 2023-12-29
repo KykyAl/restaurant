@@ -65,16 +65,13 @@ class RestaurantSearchController extends GetxController {
       isLoadingSearch(true);
 
       try {
-        // Mendapatkan hasil pencarian
         final results =
             await restaurantApi.searchRestaurants(searchQuery.value);
 
-        // Mendapatkan data restoran berdasarkan ID
         final fotoResults = await restaurantApi
             .fetchRestaurantData(results.map((r) => r.id).toList());
         log('FOTO RESULT: ${fotoResults}');
 
-        // Mendapatkan detail restoran
         final List<String?> restaurantIds = results.map((e) => e.id).toList();
         final List<RestaurantDetailModel> details = [];
 
@@ -83,16 +80,25 @@ class RestaurantSearchController extends GetxController {
           details.add(detail);
         }
 
-        // Tampilkan hasil pencarian
         searchResults.assignAll(results);
         searchFoto.assignAll(fotoResults);
         log('FOTO RESULT: ${searchFoto}');
         searchDetail.assignAll(details);
       } catch (e) {
-        print('Error searching restaurants: $e');
+        final errorMessage = 'Koneksi Anda Terpustus!!!.';
+        showSnackbar(Get.context!, errorMessage);
       } finally {
         isLoadingSearch(false);
       }
     }
+  }
+
+  void showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
