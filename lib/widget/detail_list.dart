@@ -6,12 +6,13 @@ import 'package:restauran_app/controller/controller_detail.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/widget/list_page.dart';
+import 'package:restauran_app/widget/image.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final controller = Get.find<RestaurantDetailController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +73,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                             child: ImgApi(
                               imageUrl:
                                   'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
+                              scaffoldKey: _scaffoldKey,
                             ),
                           ),
                         ],

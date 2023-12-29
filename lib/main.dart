@@ -7,7 +7,7 @@ import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/controller/controller_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/card_screen.dart';
-import 'package:restauran_app/widget/detail_list_page.dart';
+import 'package:restauran_app/widget/detail_list.dart';
 import 'package:restauran_app/widget/list_page.dart';
 import 'package:restauran_app/widget/list_search.dart';
 
