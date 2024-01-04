@@ -2,17 +2,26 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:restauran_app/controller/controler_favorit.dart';
 import 'package:restauran_app/controller/controller_detail.dart';
+import 'package:restauran_app/controller/controller_notif.dart';
 import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/controller/controller_search.dart';
+import 'package:restauran_app/database/db_helper.dart';
+import 'package:restauran_app/database/notification.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/widget/card_screen.dart';
 import 'package:restauran_app/widget/detail_list.dart';
+import 'package:restauran_app/widget/favorit_list.dart';
 import 'package:restauran_app/widget/list_page.dart';
 import 'package:restauran_app/widget/list_search.dart';
+import 'package:restauran_app/widget/setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().initialize();
+  await SharedPreferences.getInstance();
+  await DatabaseHelper.database();
   runApp(RestauranApp());
 }
 
@@ -44,7 +53,15 @@ class RestauranApp extends StatelessWidget {
           page: () => SearchPage(),
         ),
         GetPage(name: navigatorHelper.splashScreen, page: () => SplashScreen()),
-        GetPage(name: navigatorHelper.cardScreen, page: () => CartScreen())
+        GetPage(
+            name: navigatorHelper.favoriteList, page: () => FavoriteListPage()),
+        GetPage(
+          name: navigatorHelper.notif,
+          page: () => SettingPage(
+            notificationMessage: 'Cek restoran acak hari ini!',
+            notificationTitle: 'Restoran Harian',
+          ),
+        ),
       ],
       home: SplashScreen(),
     );
@@ -99,5 +116,7 @@ class Dependency implements Bindings {
     Get.put<RestaurantController>(RestaurantController());
     Get.put<RestaurantDetailController>(RestaurantDetailController());
     Get.put<RestaurantSearchController>(RestaurantSearchController());
+    Get.put<FavoriteListController>(FavoriteListController());
+    Get.put<SettingController>(SettingController());
   }
 }

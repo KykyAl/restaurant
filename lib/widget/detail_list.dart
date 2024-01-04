@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restauran_app/controller/controler_favorit.dart';
 import 'package:restauran_app/controller/controller_detail.dart';
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/error/404.dart';
@@ -12,20 +13,18 @@ class RestaurantDetailScreen extends StatelessWidget {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final controller = Get.find<RestaurantDetailController>();
+  final favoriteController = Get.find<FavoriteListController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final arguments = Get.arguments;
 
-    // Check if arguments is not null and contains the key 'id'
     final restaurantId = arguments != null ? arguments['id'] : null;
 
-    // Check if restaurantId is not null before calling fetchRestaurantDetail
     if (restaurantId != null) {
       controller.fetchRestaurantDetail(restaurantId);
     } else {
-      // Handle the case when 'id' is not present or arguments is null
       print('Error: No valid ID found in arguments');
     }
     return SafeArea(
@@ -58,7 +57,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                 slivers: [
                   SliverToBoxAdapter(
                     child: Container(
-                      height: 200,
+                      height: 280,
                       color: Colors.grey[300],
                       child: Stack(
                         children: [
@@ -67,7 +66,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                 r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
                             image:
                                 'https://restaurant-api.dicoding.dev/images/large/${restaurant!.pictureId}',
-                            imageFit: BoxFit.cover,
                           ),
                           Positioned.fill(
                             child: ImgApi(
@@ -85,13 +83,36 @@ class RestaurantDetailScreen extends StatelessWidget {
                     sliver: SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          Text(
-                            restaurant.name,
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                restaurant.name,
+                                style: GoogleFonts.playfairDisplay(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.brown,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  await favoriteController
+                                      .setRestaurantDetail(restaurant);
+                                  await favoriteController
+                                      .loadFavoriteRestaurants();
+                                },
+                                icon: Obx(() {
+                                  return Icon(
+                                    favoriteController.isFavorite.isTrue
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: favoriteController.isFavorite.isTrue
+                                        ? Colors.red
+                                        : null,
+                                  );
+                                }),
+                              ),
+                              Text('Suka')
+                            ],
                           ),
                           SizedBox(height: 8),
                           Text(
@@ -207,12 +228,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                       color: Colors.brown,
                                     ),
                                   ),
-                                  trailing: IconButton(
-                                    icon: Icon(Icons.add_shopping_cart),
-                                    onPressed: () {
-                                      controller.addToCart(context, food);
-                                    },
-                                  ),
                                 ),
                               );
                             }).toList(),
@@ -275,12 +290,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.brown,
                                       ),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.add_shopping_cart),
-                                      onPressed: () {
-                                        controller.addToCart(context, drink);
-                                      },
                                     ),
                                   ));
                             }).toList(),
@@ -383,8 +392,11 @@ class RestaurantDetailScreen extends StatelessWidget {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(Icons.shopping_cart),
+          onPressed: () {
+            Get.toNamed(navigatorHelper.favoriteList,
+                arguments: {"id": restaurantId});
+          },
+          child: Icon(Icons.favorite),
         ),
       ),
     );

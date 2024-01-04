@@ -4,10 +4,10 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/model/remote_model.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_search.dart';
 
 class RestaurantSearchController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();

@@ -7,4 +7,6 @@ class NavigatorHelper {
   String splashScreen = "/SplashScreen";
   String notFound = "/NoutFound";
   String cardScreen = "/CardScreen";
+  String favoriteList = "/FavoriteList";
+  String notif = "/Notif";
 }

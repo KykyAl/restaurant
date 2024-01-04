@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/model/remote_model.dart';
 import 'package:restauran_app/widget/image.dart';
 
 class ListPage extends GetWidget<RestaurantController> {
@@ -108,7 +108,7 @@ class ListPage extends GetWidget<RestaurantController> {
                           ),
                           itemCount: controller.restaurantList.length,
                           itemBuilder: (context, index) {
-                            return _buildArticleItem(
+                            return buildArticleItem(
                               context,
                               controller.restaurantList[index],
                             );
@@ -122,11 +122,33 @@ class ListPage extends GetWidget<RestaurantController> {
             );
           },
         ),
+        bottomNavigationBar: Obx(
+          () => BottomNavigationBar(
+            backgroundColor: Color.fromARGB(230, 34, 33, 33),
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                label: 'Semua',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Favorit',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Pengaturan',
+              ),
+            ],
+            currentIndex: controller.selectedIndex.value,
+            selectedItemColor: Colors.brown,
+            onTap: (index) => controller.onItemTapped(index),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildArticleItem(BuildContext context, RestaurantModel restaurant) {
+  Widget buildArticleItem(BuildContext context, RestaurantModel restaurant) {
     return InkWell(
       onTap: () {
         Get.toNamed(navigatorHelper.detailPage,

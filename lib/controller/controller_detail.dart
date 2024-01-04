@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
+import 'package:restauran_app/database/db_helper.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/widget/addChart.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
 
 class RestaurantDetailController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
@@ -21,7 +20,7 @@ class RestaurantDetailController extends GetxController {
   Rx<int> responseTime = 0.obs;
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
-  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
+  static final DatabaseHelper dbHelper = DatabaseHelper();
 
   var isLoading = true.obs;
   var isError = false.obs;
@@ -92,15 +91,18 @@ class RestaurantDetailController extends GetxController {
     }
   }
 
-  Future<void> fetchRestaurantDetail(String restaurantId) async {
+  Future<RestaurantDetailModel?> fetchRestaurantDetail(
+      String restaurantId) async {
     try {
       isLoadingDetail(true);
       var result = await restaurantApi.getRestaurantDetail(restaurantId);
       restaurantDetail.value = result;
+      return result; // Mengembalikan hasil fetch sebagai Future<RestaurantDetailModel?>
     } catch (error) {
       isErrorDetail(true);
-      final errorMessage = 'Koneksi Anda Terpustus!!!.';
+      final errorMessage = 'Koneksi Anda Terputus!!!.';
       showSnackbar(Get.context!, errorMessage);
+      return null; // Mengembalikan null jika terjadi error
     } finally {
       isLoadingDetail(false);
     }
@@ -113,15 +115,5 @@ class RestaurantDetailController extends GetxController {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void addToCart(BuildContext context, food) {
-    ShoppingCart().items.add(CartItem(name: food.name, price: 1.0));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${food.name} added to the cart'),
-        duration: Duration(seconds: 2),
-      ),
-    );
   }
 }

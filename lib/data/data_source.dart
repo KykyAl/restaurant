@@ -3,9 +3,9 @@ import 'dart:developer';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
+import 'package:restauran_app/model/remote_model.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_search.dart';
 
 class RemoteDatasource {
   final _BASE_URL = "https://restaurant-api.dicoding.dev/";
@@ -49,7 +49,6 @@ class RemoteDatasource {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final restaurantData = data['restaurant'];
-        log('restauran :${restaurantData}');
         return RestaurantDetailModel(
           id: restaurantData['id'],
           name: restaurantData['name'],

@@ -2,10 +2,10 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/model/remote_model.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_search.dart';
 
 class RestaurantController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
@@ -28,10 +28,12 @@ class RestaurantController extends GetxController {
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
   RxBool isInternetConnected = true.obs;
+  late final PageController pageController = PageController();
 
   var isOnline = true.obs;
 
   final RxBool isOnlineRx = true.obs;
+  RxInt selectedIndex = 0.obs;
 
   @override
   void onInit() {
@@ -41,6 +43,30 @@ class RestaurantController extends GetxController {
 
     getListOfRestaurants();
     performSearch();
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+
+  void onItemTapped(int index) {
+    if (selectedIndex.value != index) {
+      selectedIndex.value = index;
+      if (selectedIndex.value == 0) {
+        // Navigasi ke halaman semua restoran
+        Get.find<RestaurantController>().onInit();
+
+        Get.toNamed(navigatorHelper.listPage);
+      } else if (selectedIndex.value == 1) {
+        // Navigasi ke halaman favorit
+        Get.toNamed(navigatorHelper.favoriteList);
+      } else if (selectedIndex.value == 2) {
+        // Navigasi ke halaman pengaturan
+        Get.toNamed(navigatorHelper.notif);
+      }
+    }
   }
 
   void checkConnectionStatus() async {
