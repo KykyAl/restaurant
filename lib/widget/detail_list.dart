@@ -71,7 +71,6 @@ class RestaurantDetailScreen extends StatelessWidget {
                             child: ImgApi(
                               imageUrl:
                                   'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
-                              scaffoldKey: _scaffoldKey,
                             ),
                           ),
                         ],

@@ -10,7 +10,7 @@ class SettingController extends GetxController {
 
   @override
   void onInit() {
-    loadReminderStatus(); // Panggil metode untuk mengatur status notifikasi awal
+    loadReminderStatus();
     super.onInit();
   }
 
@@ -40,7 +40,7 @@ class SettingController extends GetxController {
   // Metode untuk menyimpan status notifikasi ke Shared Preferences
   Future<void> saveReminderStatus(bool isReminderEnabled) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isReminderEnabled', isReminderEnabled);
+    await prefs.setBool('isReminderEnabled', false);
   }
 
   // Di dalam SettingController

@@ -58,8 +58,10 @@ class RestauranApp extends StatelessWidget {
         GetPage(
           name: navigatorHelper.notif,
           page: () => SettingPage(
-            notificationMessage: 'Cek restoran acak hari ini!',
-            notificationTitle: 'Restoran Harian',
+            notificationTitle: 'Restauran Random',
+            notificationMessage: 'Belum Ada Restauran Random ',
+            pictureId: '',
+            rating: 0.0,
           ),
         ),
       ],

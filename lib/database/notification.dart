@@ -1,5 +1,3 @@
-// notification_service.dart
-
 import 'dart:math';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -39,18 +37,22 @@ class NotificationService {
 
   RestaurantNotifModel buildRandomRestaurant() {
     final controller = Get.find<RestaurantController>();
-
     final random = Random();
     final randomIndex = random.nextInt(controller.restaurantList.length);
     final randomRestaurant = controller.restaurantList[randomIndex];
     print('Random${randomRestaurant}');
     // Anda dapat mengembalikan objek RestaurantNotifModel langsung
     return RestaurantNotifModel(
-        name: randomRestaurant.name, city: randomRestaurant.city);
+        name: randomRestaurant.name,
+        city: randomRestaurant.city,
+        description: randomRestaurant.description,
+        pictureId: randomRestaurant.pictureId,
+        rating: randomRestaurant.rating);
   }
 
   Future<void> _onSelectNotification(String? payload) async {
     final RestaurantNotifModel randomRestaurant = buildRandomRestaurant();
+    final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -58,23 +60,28 @@ class NotificationService {
       'Daily Reminder',
       importance: Importance.high,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound('alarm'), // Menentukan suara
+      sound: RawResourceAndroidNotificationSound('alarm'),
     );
     NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      0,
+      notificationId,
       'Restoran Harian: ${randomRestaurant.name}',
       'Cek restoran acak hari ini!',
       platformChannelSpecifics,
       payload: payload,
     );
 
-    Get.offAll(() => SettingPage(
+    Get.off(() => SettingPage(
           notificationTitle: 'Restoran Harian: ${randomRestaurant.name}',
-          notificationMessage: 'restoran acak hari ini!',
+          notificationMessage: '${randomRestaurant.city}',
+          pictureId: randomRestaurant.pictureId,
+          rating: randomRestaurant.rating,
         ));
+
+    // Batalkan notifikasi setelah diklik
+    await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
   Future<void> showDailyRestaurantNotification() async {
@@ -89,8 +96,7 @@ class NotificationService {
           'Daily Reminder',
           importance: Importance.high,
           priority: Priority.high,
-          sound:
-              RawResourceAndroidNotificationSound('alarm'), // Menentukan suara
+          sound: RawResourceAndroidNotificationSound('alarm'),
         ),
       ),
       androidAllowWhileIdle: true,

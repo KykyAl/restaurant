@@ -122,7 +122,6 @@ class SearchPage extends GetView<RestaurantSearchController> {
                   child: ImgApi(
                     imageUrl:
                         'https://restaurant-api.dicoding.dev/images/large/${restauranDetail.pictureId}',
-                    scaffoldKey: _scaffoldKey,
                   ),
                 ),
                 title: Text(

@@ -58,7 +58,7 @@ class RestaurantController extends GetxController {
         // Navigasi ke halaman semua restoran
         Get.find<RestaurantController>().onInit();
 
-        Get.toNamed(navigatorHelper.listPage);
+        Get.offAllNamed(navigatorHelper.listPage);
       } else if (selectedIndex.value == 1) {
         // Navigasi ke halaman favorit
         Get.toNamed(navigatorHelper.favoriteList);
