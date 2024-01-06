@@ -29,7 +29,6 @@ void main() {
     var searchController = RestaurantSearchController();
     var testRestaurantName = 'Kafe';
 
-    // Set string pencarian ke dalam controller
     searchController.searchQuery.value = testRestaurantName;
 
     print(
@@ -37,7 +36,6 @@ void main() {
 
     await searchController.performSearch();
 
-    // Periksa apakah ada restoran dengan nama yang diharapkan
     var result = searchController.searchResults
         .any((restaurant) => restaurant.name == testRestaurantName);
 
@@ -47,12 +45,11 @@ void main() {
   test('should fetch restaurant detail and contain specific information',
       () async {
     var detailController = RestaurantDetailController();
-    var testRestaurantId = 'Melting Pot';
+    var testRestaurantId = 'fnfn8mytkpmkfw1e867';
 
     await detailController.fetchRestaurantDetail(testRestaurantId);
-    final restaurant = detailController.restaurantDetail[0];
-    var result = restaurant.id == testRestaurantId;
-
+    var result = detailController.restaurantDetail
+        .any((element) => element.id == testRestaurantId);
     expect(result, true);
   });
 }
