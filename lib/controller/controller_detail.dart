@@ -8,9 +8,10 @@ import 'package:restauran_app/model/remote_model_detail.dart';
 class RestaurantDetailController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
+
   final RxBool isDialogVisible = false.obs;
-  Rx<RestaurantDetailModel?> restaurantDetail =
-      Rx<RestaurantDetailModel?>(null);
+  RxList<RestaurantDetailModel> restaurantDetail =
+      <RestaurantDetailModel>[].obs;
   RxBool isLoadingDetail = true.obs;
   RxBool isErrorDetail = false.obs;
   RxString errorMessageDetail = ''.obs;
@@ -96,7 +97,7 @@ class RestaurantDetailController extends GetxController {
     try {
       isLoadingDetail(true);
       var result = await restaurantApi.getRestaurantDetail(restaurantId);
-      restaurantDetail.value = result;
+      restaurantDetail.assign(result);
       return result; // Mengembalikan hasil fetch sebagai Future<RestaurantDetailModel?>
     } catch (error) {
       isErrorDetail(true);

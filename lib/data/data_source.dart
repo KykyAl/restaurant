@@ -10,40 +10,28 @@ import 'package:restauran_app/model/remote_model_search.dart';
 class RemoteDatasource {
   final _BASE_URL = "https://restaurant-api.dicoding.dev/";
 
-  Future<List<RestaurantModel>> fetchRestaurantData(List<String?> list) async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      print('No internet connection');
-      throw Exception('No internet connection');
-    }
-
+  Future<List<RestaurantModel>> fetchRestaurantData(
+      http.Client client, List<String?> list) async {
     try {
-      final response = await http.get(Uri.parse('$_BASE_URL/list'));
+      final response = await client.get(Uri.parse('$_BASE_URL/list'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final List<dynamic> restaurantsData = data['restaurants'];
-        log(' ${restaurantsData}');
         return restaurantsData.map((restaurant) {
           return RestaurantModel.fromJson(restaurant);
         }).toList();
       } else {
-        print('Error: ${response.statusCode}');
-        throw Exception(' ${response.statusCode}');
+        throw Exception(
+            'Failed to load restaurant data: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
       throw e;
     }
   }
 
   Future<RestaurantDetailModel> getRestaurantDetail(String restaurantId) async {
     final url = '$_BASE_URL/detail/$restaurantId';
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      print('No internet connection');
-      throw Exception('No internet connection');
-    }
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

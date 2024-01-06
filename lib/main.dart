@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await NotificationService().initialize();
   await SharedPreferences.getInstance();
   await DatabaseHelper.database();
@@ -59,7 +60,7 @@ class RestauranApp extends StatelessWidget {
           name: navigatorHelper.notif,
           page: () => SettingPage(
             notificationTitle: 'Restauran Random',
-            notificationMessage: 'Belum Ada Restauran Random ',
+            notificationMessage: '  ',
             pictureId: '',
             rating: 0.0,
           ),

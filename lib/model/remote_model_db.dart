@@ -1,10 +1,10 @@
 class RestaurantDataBase {
-  final String name;
-  final String id;
-  final String address;
-  final String city;
-  final double rating;
-  final int pictureId;
+  String? name;
+  String? id;
+  String? address;
+  String? city;
+  String? pictureId;
+  double? rating;
 
   RestaurantDataBase({
     required this.id,
@@ -21,23 +21,16 @@ class RestaurantDataBase {
         name: json['name'],
         address: json['address'],
         city: json['city'],
-        rating: json['rating'],
-        pictureId: json['pictureId']);
+        rating: (json['rating'] as num?)
+            ?.toDouble(), // Konversi rating menjadi double
+        pictureId: json['pictureId'].toString());
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'address': address,
-    };
+    return {'id': id, 'name': name, 'address': address, 'pictureId': pictureId};
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'address': address,
-    };
+    return {'id': id, 'name': name, 'address': address, 'pictureId': pictureId};
   }
 }

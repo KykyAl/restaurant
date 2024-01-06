@@ -22,12 +22,63 @@ class RestaurantDetailModel {
     required this.rating,
     required this.customerReviews,
   });
+
+  // Serialisasi objek ke JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'city': city,
+      'address': address,
+      'pictureId': pictureId,
+      'categories': categories.map((category) => category.toJson()).toList(),
+      'menus': menus.toJson(),
+      'rating': rating,
+      'customerReviews':
+          customerReviews.map((review) => review.toJson()).toList(),
+    };
+  }
+
+  // Deserialisasi objek dari JSON
+  factory RestaurantDetailModel.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetailModel(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      city: json['city'],
+      address: json['address'],
+      pictureId: json['pictureId'],
+      categories: (json['categories'] as List<dynamic>)
+          .map((category) => Category.fromJson(category))
+          .toList(),
+      menus: Menus.fromJson(json['menus']),
+      rating: json['rating'],
+      customerReviews: (json['customerReviews'] as List<dynamic>)
+          .map((review) => CustomerReview.fromJson(review))
+          .toList(),
+    );
+  }
 }
 
 class Category {
   final String name;
 
   Category({required this.name});
+
+  // Serialisasi objek ke JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+    };
+  }
+
+  // Deserialisasi objek dari JSON
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      name: json['name'],
+    );
+  }
 }
 
 class Menus {
@@ -35,11 +86,46 @@ class Menus {
   final List<MenuItem> drinks;
 
   Menus({required this.foods, required this.drinks});
+
+  // Serialisasi objek ke JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'foods': foods.map((food) => food.toJson()).toList(),
+      'drinks': drinks.map((drink) => drink.toJson()).toList(),
+    };
+  }
+
+  // Deserialisasi objek dari JSON
+  factory Menus.fromJson(Map<String, dynamic> json) {
+    return Menus(
+      foods: (json['foods'] as List<dynamic>)
+          .map((food) => MenuItem.fromJson(food))
+          .toList(),
+      drinks: (json['drinks'] as List<dynamic>)
+          .map((drink) => MenuItem.fromJson(drink))
+          .toList(),
+    );
+  }
 }
 
 class MenuItem {
   final String name;
+
   MenuItem({required this.name});
+
+  // Serialisasi objek ke JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+    };
+  }
+
+  // Deserialisasi objek dari JSON
+  factory MenuItem.fromJson(Map<String, dynamic> json) {
+    return MenuItem(
+      name: json['name'],
+    );
+  }
 }
 
 class CustomerReview {
@@ -47,6 +133,27 @@ class CustomerReview {
   final String review;
   final String date;
 
-  CustomerReview(
-      {required this.name, required this.review, required this.date});
+  CustomerReview({
+    required this.name,
+    required this.review,
+    required this.date,
+  });
+
+  // Serialisasi objek ke JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'review': review,
+      'date': date,
+    };
+  }
+
+  // Deserialisasi objek dari JSON
+  factory CustomerReview.fromJson(Map<String, dynamic> json) {
+    return CustomerReview(
+      name: json['name'],
+      review: json['review'],
+      date: json['date'],
+    );
+  }
 }

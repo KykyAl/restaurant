@@ -48,13 +48,13 @@ class FavoriteListController extends GetxController {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // User chose not to toggle
+                Navigator.of(context).pop(false);
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed toggle
+                Navigator.of(context).pop(true);
               },
               child: Text(isCurrentlyFavorite ? 'Remove' : 'Add'),
             ),
@@ -78,13 +78,13 @@ class FavoriteListController extends GetxController {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // User chose not to remove
+                Navigator.of(context).pop(false);
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed removal
+                Navigator.of(context).pop(true);
               },
               child: Text('Remove'),
             ),

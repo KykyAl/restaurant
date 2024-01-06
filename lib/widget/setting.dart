@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_notif.dart';
 import 'package:restauran_app/controller/controller_page.dart';
-import 'package:restauran_app/widget/image.dart';
 
 class SettingPage extends StatelessWidget {
   final SettingController settingController = Get.find<SettingController>();
@@ -12,14 +10,12 @@ class SettingPage extends StatelessWidget {
 
   final String notificationTitle;
   final String notificationMessage;
-  // final String description;
   final String pictureId;
   final double rating;
 
   SettingPage({
     required this.notificationTitle,
     required this.notificationMessage,
-    // required this.description,
     required this.pictureId,
     required this.rating,
   });
@@ -28,32 +24,18 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daily'),
+        title: Text(
+          'Daily',
+          style: GoogleFonts.abrilFatface(
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.brown,
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              height: 280,
-              color: Colors.grey[300],
-              child: Stack(
-                children: [
-                  BlurHash(
-                    hash:
-                        r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
-                    image:
-                        'https://restaurant-api.dicoding.dev/images/large/${pictureId}',
-                  ),
-                  Positioned.fill(
-                    child: ImgApi(
-                      imageUrl:
-                          'https://restaurant-api.dicoding.dev/images/large/${pictureId}',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           SliverPadding(
             padding: const EdgeInsets.all(16.0),
             sliver: SliverList(
@@ -124,11 +106,8 @@ class SettingPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                onPressed: () {
-                  // Panggil metode untuk mematikan notifikasi harian
-                  settingController.cancelScheduledReminder();
-                },
-                child: Text('Notikasi Harian'),
+                onPressed: () {},
+                child: Text('Lihat Detail'),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

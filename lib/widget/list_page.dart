@@ -3,7 +3,6 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_page.dart';
-import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/model/remote_model.dart';
@@ -11,138 +10,133 @@ import 'package:restauran_app/widget/image.dart';
 
 class ListPage extends GetWidget<RestaurantController> {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
-  final RemoteDatasource restaurantApi = RemoteDatasource();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.brown,
-          title: Text(
-            'Restauran Apps',
-            style: GoogleFonts.abrilFatface(
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.brown,
+        title: Text(
+          'Restauran Apps',
+          style: GoogleFonts.abrilFatface(
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          InkWell(
+            onTap: () => Get.toNamed(navigatorHelper.searchPage),
+            child: Container(
+              height: 50,
+              width: 50,
+              child: const Icon(
+                Icons.search,
+                size: 30,
+                color: Colors.white,
+              ),
             ),
           ),
-          actions: [
-            InkWell(
-              onTap: () => Get.toNamed(navigatorHelper.searchPage),
-              child: Container(
-                height: 50,
-                width: 50,
-                child: const Icon(
-                  Icons.search,
-                  size: 30,
-                  color: Colors.white,
+        ],
+      ),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          return Container(
+            color: Color.fromARGB(230, 34, 33, 33),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 55,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(left: 20, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Hitsss',
+                        style: GoogleFonts.abrilFatface(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.yellowAccent,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.thunderstorm_outlined,
+                        color: Colors.blue,
+                      )
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: Obx(() {
+                    if (controller.isLoading.isTrue) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (!controller.isOnline.value) {
+                      return Center(
+                        child: Text(
+                          'Tidak ada koneksi internet',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow),
+                        ),
+                      );
+                    } else if (controller.restaurantList.isEmpty) {
+                      return NotFound(
+                        codeError: '500',
+                        message:
+                            'An error occurred: ${controller.isError.value}',
+                      );
+                    } else {
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              orientation == Orientation.portrait ? 2 : 2,
+                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 16.0,
+                          childAspectRatio:
+                              orientation == Orientation.portrait ? 0.7 : 1.0,
+                        ),
+                        itemCount: controller.restaurantList.length,
+                        itemBuilder: (context, index) {
+                          return buildArticleItem(
+                            context,
+                            controller.restaurantList[index],
+                          );
+                        },
+                      );
+                    }
+                  }),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          backgroundColor: Color.fromARGB(230, 34, 33, 33),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Menu',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorit',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Pengaturan',
             ),
           ],
-        ),
-        body: OrientationBuilder(
-          builder: (context, orientation) {
-            return Container(
-              color: Color.fromARGB(230, 34, 33, 33),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.only(left: 20, top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Hitsss',
-                          style: GoogleFonts.abrilFatface(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.yellowAccent,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.thunderstorm_outlined,
-                          color: Colors.blue,
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: Obx(() {
-                      if (controller.isLoading.isTrue) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (!controller.isOnline.value) {
-                        return Center(
-                          child: Text(
-                            'Tidak ada koneksi internet',
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.yellow),
-                          ),
-                        );
-                      } else if (controller.restaurantList.isEmpty) {
-                        return NotFound(
-                          codeError: '500',
-                          message:
-                              'An error occurred: ${controller.isError.value}',
-                        );
-                      } else {
-                        return GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount:
-                                orientation == Orientation.portrait ? 2 : 2,
-                            crossAxisSpacing: 16.0,
-                            mainAxisSpacing: 16.0,
-                            childAspectRatio:
-                                orientation == Orientation.portrait ? 0.7 : 1.0,
-                          ),
-                          itemCount: controller.restaurantList.length,
-                          itemBuilder: (context, index) {
-                            return buildArticleItem(
-                              context,
-                              controller.restaurantList[index],
-                            );
-                          },
-                        );
-                      }
-                    }),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        bottomNavigationBar: Obx(
-          () => BottomNavigationBar(
-            backgroundColor: Color.fromARGB(230, 34, 33, 33),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.list),
-                label: 'Semua',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'Favorit',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Pengaturan',
-              ),
-            ],
-            currentIndex: controller.selectedIndex.value,
-            selectedItemColor: Colors.brown,
-            onTap: (index) => controller.onItemTapped(index),
-          ),
+          currentIndex: controller.selectedIndex.value,
+          selectedItemColor: Colors.brown,
+          onTap: (index) => controller.onItemTapped(index),
         ),
       ),
     );

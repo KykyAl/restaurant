@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ImgApi extends StatelessWidget {
   final String imageUrl;
@@ -11,28 +12,13 @@ class ImgApi extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(5.0),
-      child: Image.network(
-        imageUrl,
+      child: FadeInImage.memoryNetwork(
+        placeholder: kTransparentImage,
+        image: imageUrl,
         width: double.infinity,
-        height: 190.0,
+        height: 250.0,
         fit: BoxFit.cover,
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          } else {
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        (loadingProgress.expectedTotalBytes ?? 1)
-                    : null,
-              ),
-            );
-          }
-        },
-        errorBuilder:
-            (BuildContext context, Object error, StackTrace? stackTrace) {
+        imageErrorBuilder: (context, error, stackTrace) {
           return Container(
             color: Colors.grey,
             child: Center(

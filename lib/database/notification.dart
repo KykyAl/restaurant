@@ -73,7 +73,7 @@ class NotificationService {
       payload: payload,
     );
 
-    Get.off(() => SettingPage(
+    Get.to(() => SettingPage(
           notificationTitle: 'Restoran Harian: ${randomRestaurant.name}',
           notificationMessage: '${randomRestaurant.city}',
           pictureId: randomRestaurant.pictureId,
