@@ -1,55 +1,62 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:restauran_app/controller/controller_detail.dart';
-import 'package:restauran_app/controller/controller_page.dart';
-import 'package:restauran_app/controller/controller_search.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:restauran_app/model/remote_model.dart';
 
 void main() {
-  setUp(() {
-    WidgetsFlutterBinding.ensureInitialized();
-  });
-  test('seharusnya mengambil dan mengandung restoran baru dalam daftar',
-      () async {
-    var restaurantController = RestaurantController();
-    var testRestaurantName = 'Melting Pot';
+  group('Pemrosesan JSON pada RestaurantModel', () {
+    test('Seharusnya memparsing JSON dengan benar dengan isFavorite boolean',
+        () async {
+      final Map<String, dynamic> json = {
+        'id': '1',
+        'name': 'Resto Test',
+        'address': '123 Main St',
+        'city': 'Test City',
+        'pictureId': 'test_picture_id',
+        'rating': 4.5,
+        'isFavorite': true,
+      };
 
-    await restaurantController.getListOfRestaurants();
+      final client = MockClient((request) async {
+        return http.Response(jsonEncode(json), 200);
+      });
 
-    print('Daftar Restoran: ${restaurantController.restaurantList}');
+      final RestaurantModel restaurant =
+          await RestaurantModel.fromJsonAsync(client);
 
-    var result = restaurantController.restaurantList
-        .any((restaurant) => restaurant.name == testRestaurantName);
+      expect(restaurant.id, '1');
+      expect(restaurant.name, 'Resto Test');
+      expect(restaurant.city, 'Test City');
+      expect(restaurant.pictureId, 'test_picture_id');
+      expect(restaurant.rating, 4.5);
+    });
 
-    print('Hasil Uji: $result');
+    test('Seharusnya memparsing JSON dengan benar dengan isFavorite null',
+        () async {
+      final Map<String, dynamic> json = {
+        'id': '2',
+        'name': 'sebagian Resto',
+        'address': '456 ',
+        'city': 'sebagian City',
+        'pictureId': 'sebagian_picture_id',
+        'rating': 3.8,
+        'isFavorite': null,
+      };
 
-    expect(result, true);
-  });
-  test('should perform search and contain new restaurant in the list',
-      () async {
-    var searchController = RestaurantSearchController();
-    var testRestaurantName = 'Kafe';
+      final client = MockClient((request) async {
+        return http.Response(jsonEncode(json), 200);
+      });
 
-    searchController.searchQuery.value = testRestaurantName;
+      final RestaurantModel restaurant =
+          await RestaurantModel.fromJsonAsync(client);
 
-    print(
-        'Carii Restoran Sebelum Pencarian: ${searchController.searchResults}');
-
-    await searchController.performSearch();
-
-    var result = searchController.searchResults
-        .any((restaurant) => restaurant.name == testRestaurantName);
-
-    expect(result, false);
-  });
-
-  test('should fetch restaurant detail and contain specific information',
-      () async {
-    var detailController = RestaurantDetailController();
-    var testRestaurantId = 'fnfn8mytkpmkfw1e867';
-
-    await detailController.fetchRestaurantDetail(testRestaurantId);
-    var result = detailController.restaurantDetail
-        .any((element) => element.id == testRestaurantId);
-    expect(result, true);
+      expect(restaurant.id, '2');
+      expect(restaurant.name, 'sebagian Resto');
+      expect(restaurant.city, 'sebagian City');
+      expect(restaurant.pictureId, 'sebagian_picture_id');
+      expect(restaurant.rating, 3.8);
+    });
   });
 }

@@ -9,6 +9,7 @@ class RestaurantDetailModel {
   final Menus menus;
   final double rating;
   final List<CustomerReview> customerReviews;
+  bool isFavorite; // Tambahkan properti isFavorite
 
   RestaurantDetailModel({
     required this.id,
@@ -21,6 +22,7 @@ class RestaurantDetailModel {
     required this.menus,
     required this.rating,
     required this.customerReviews,
+    required this.isFavorite,
   });
 
   // Serialisasi objek ke JSON
@@ -37,6 +39,7 @@ class RestaurantDetailModel {
       'rating': rating,
       'customerReviews':
           customerReviews.map((review) => review.toJson()).toList(),
+      'isFavorite': isFavorite, // Tambahkan isFavorite ke JSON
     };
   }
 
@@ -57,6 +60,8 @@ class RestaurantDetailModel {
       customerReviews: (json['customerReviews'] as List<dynamic>)
           .map((review) => CustomerReview.fromJson(review))
           .toList(),
+      isFavorite:
+          json['isFavorite'] as bool? ?? false, // Ambil isFavorite dari JSON
     );
   }
 }

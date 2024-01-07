@@ -3,11 +3,13 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controler_favorit.dart';
+import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/image.dart';
 
 class FavoriteListPage extends StatelessWidget {
   final controller = Get.find<FavoriteListController>();
+  final controllerIndex = Get.find<RestaurantController>();
 
   final navigatorHelper = NavigatorHelper();
 
@@ -125,6 +127,28 @@ class FavoriteListPage extends StatelessWidget {
                   );
                 },
               )),
+      ),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          backgroundColor: Color.fromARGB(230, 34, 33, 33),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Menu',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Setting',
+            ),
+          ],
+          currentIndex: controllerIndex.selectedIndex.value,
+          selectedItemColor: Colors.brown,
+          onTap: (index) => controllerIndex.onItemTapped(index),
+        ),
       ),
     );
   }

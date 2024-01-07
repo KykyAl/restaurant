@@ -127,11 +127,11 @@ class ListPage extends GetWidget<RestaurantController> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
-              label: 'Favorit',
+              label: 'Favorite',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
-              label: 'Pengaturan',
+              label: 'Setting',
             ),
           ],
           currentIndex: controller.selectedIndex.value,
@@ -183,7 +183,7 @@ class ListPage extends GetWidget<RestaurantController> {
               color: Colors.black,
             ),
             Text(
-              restaurant.name,
+              restaurant.name.toString(),
               textAlign: TextAlign.center,
               style: GoogleFonts.openSans(
                 fontSize: 15,

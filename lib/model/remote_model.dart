@@ -1,10 +1,14 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 class RestaurantModel {
-  final String id;
-  final String name;
-  final String description;
-  final String pictureId;
-  final String city;
-  final double rating;
+  String? id;
+  String? name;
+  String? description;
+  String? pictureId;
+  String? city;
+  double rating;
 
   RestaurantModel({
     required this.id,
@@ -24,6 +28,25 @@ class RestaurantModel {
       city: json['city'],
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
     );
+  }
+
+  static Future<RestaurantModel> fromJsonAsync(http.Client client) async {
+    final response =
+        await client.get(Uri.parse('https://restaurant-api.dicoding.dev/'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      return RestaurantModel(
+        id: json['id'],
+        name: json['name'],
+        description: json['description'],
+        pictureId: json['pictureId'],
+        city: json['city'],
+        rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      );
+    } else {
+      throw Exception('Failed to load restaurant data');
+    }
   }
 
   Map<String, dynamic> toJson() {

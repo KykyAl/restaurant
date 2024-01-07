@@ -8,12 +8,11 @@ class FavoriteListController extends GetxController {
   RxList<RestaurantDataBase> favoriteRestaurants = <RestaurantDataBase>[].obs;
   Rx<RestaurantDetailModel?> restaurantDetail =
       Rx<RestaurantDetailModel?>(null);
-  RxBool isFavorite = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadFavoriteRestaurants();
+  refreshFavoriteStatus(String restaurantId) async {
+    final isFavoriteNow =
+        await DatabaseHelper.isRestaurantInFavorites(restaurantId);
+    restaurantDetail.value?.isFavorite = isFavoriteNow;
   }
 
   Future<void> loadFavoriteRestaurants() async {
@@ -24,12 +23,6 @@ class FavoriteListController extends GetxController {
       favorites.map((map) => RestaurantDataBase.fromJson(map)),
     );
     print("Favorite restaurants: $favoriteRestaurants");
-  }
-
-  void refreshFavoriteStatus(String restaurantId) async {
-    final isFavoriteNow =
-        await DatabaseHelper.isRestaurantInFavorites(restaurantId);
-    isFavorite.value = isFavoriteNow;
   }
 
   Future<bool?> _showConfirmationDialog(BuildContext context,
@@ -122,6 +115,7 @@ class FavoriteListController extends GetxController {
             pictureId: restaurant.pictureId,
             rating: restaurant.rating,
           );
+          restaurant.isFavorite = true;
           refreshFavoriteStatus(restaurantId);
         }
       }
@@ -168,9 +162,5 @@ class FavoriteListController extends GetxController {
         );
       },
     );
-  }
-
-  Future<void> loadFavoriteRestaurantsDelete() async {
-    await loadFavoriteRestaurants();
   }
 }

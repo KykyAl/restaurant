@@ -41,12 +41,12 @@ class NotificationService {
     final randomIndex = random.nextInt(controller.restaurantList.length);
     final randomRestaurant = controller.restaurantList[randomIndex];
     print('Random${randomRestaurant}');
-    // Anda dapat mengembalikan objek RestaurantNotifModel langsung
     return RestaurantNotifModel(
-        name: randomRestaurant.name,
-        city: randomRestaurant.city,
-        description: randomRestaurant.description,
-        pictureId: randomRestaurant.pictureId,
+        id: randomRestaurant.id.toString(),
+        name: randomRestaurant.name.toString(),
+        city: randomRestaurant.city.toString(),
+        description: randomRestaurant.description.toString(),
+        pictureId: randomRestaurant.pictureId.toString(),
         rating: randomRestaurant.rating);
   }
 
@@ -74,13 +74,13 @@ class NotificationService {
     );
 
     Get.to(() => SettingPage(
+          id: randomRestaurant.id,
           notificationTitle: 'Restoran Harian: ${randomRestaurant.name}',
           notificationMessage: '${randomRestaurant.city}',
           pictureId: randomRestaurant.pictureId,
           rating: randomRestaurant.rating,
         ));
 
-    // Batalkan notifikasi setelah diklik
     await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
@@ -113,12 +113,12 @@ class NotificationService {
       now.year,
       now.month,
       now.day,
-      now.hour,
-      now.minute + 1,
+      11,
+      0,
     );
 
     if (now.isAfter(scheduledDate)) {
-      scheduledDate = scheduledDate.add(const Duration(minutes: 1));
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
     return scheduledDate;
@@ -126,7 +126,6 @@ class NotificationService {
 
   // Di dalam NotificationService
   Future<void> cancelScheduledNotification() async {
-    // Panggil metode cancelScheduledNotification dari FlutterLocalNotificationsPlugin
     await flutterLocalNotificationsPlugin.cancel(0);
   }
 }

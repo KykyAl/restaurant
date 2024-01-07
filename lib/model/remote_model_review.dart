@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 class ReviewModel {
-  String name;
-  String review;
-  String date;
+  String? name;
+  String? review;
+  String? date;
 
   ReviewModel({
     required this.name,

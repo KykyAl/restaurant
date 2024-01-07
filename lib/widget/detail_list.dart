@@ -96,13 +96,16 @@ class RestaurantDetailScreen extends StatelessWidget {
                                     .loadFavoriteRestaurants();
                               },
                               icon: Obx(() {
+                                final isFavorite = favoriteController
+                                    .favoriteRestaurants
+                                    .any((favRestaurant) =>
+                                        favRestaurant.id == restaurant.id);
+
                                 return Icon(
-                                  favoriteController.isFavorite.isTrue
+                                  isFavorite
                                       ? Icons.favorite
                                       : Icons.favorite_border,
-                                  color: favoriteController.isFavorite.isTrue
-                                      ? Colors.red
-                                      : null,
+                                  color: isFavorite ? Colors.red : null,
                                 );
                               }),
                             ),

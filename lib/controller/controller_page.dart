@@ -50,17 +50,11 @@ class RestaurantController extends GetxController {
     if (selectedIndex.value != index) {
       selectedIndex.value = index;
       if (selectedIndex.value == 0) {
-        Get.find<RestaurantController>().onInit();
-
         Get.offAllNamed(navigatorHelper.listPage);
       } else if (selectedIndex.value == 1) {
-        Get.find<RestaurantController>().onInit();
-
-        Get.toNamed(navigatorHelper.favoriteList);
+        Get.offAllNamed(navigatorHelper.favoriteList);
       } else if (selectedIndex.value == 2) {
-        Get.find<RestaurantController>().onInit();
-
-        Get.toNamed(navigatorHelper.notif);
+        Get.offAllNamed(navigatorHelper.notif);
       }
     }
   }

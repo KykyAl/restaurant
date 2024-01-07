@@ -59,6 +59,7 @@ class RestauranApp extends StatelessWidget {
         GetPage(
           name: navigatorHelper.notif,
           page: () => SettingPage(
+            id: '',
             notificationTitle: 'Restauran Random',
             notificationMessage: '  ',
             pictureId: '',

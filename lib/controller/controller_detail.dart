@@ -98,23 +98,28 @@ class RestaurantDetailController extends GetxController {
       isLoadingDetail(true);
       var result = await restaurantApi.getRestaurantDetail(restaurantId);
       restaurantDetail.assign(result);
-      return result; // Mengembalikan hasil fetch sebagai Future<RestaurantDetailModel?>
+      return result;
     } catch (error) {
       isErrorDetail(true);
       final errorMessage = 'Koneksi Anda Terputus!!!.';
       showSnackbar(Get.context!, errorMessage);
-      return null; // Mengembalikan null jika terjadi error
+      return null;
     } finally {
       isLoadingDetail(false);
     }
   }
 
   void showSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: 3),
-    );
+    Future.delayed(
+      Duration.zero,
+      () {
+        final snackBar = SnackBar(
+          content: Text(message),
+          duration: Duration(seconds: 3),
+        );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+    );
   }
 }

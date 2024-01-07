@@ -13,6 +13,7 @@ import 'package:restauran_app/model/remote_model_search.dart';
 class RestaurantSearchController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
+  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
@@ -39,17 +40,16 @@ class RestaurantSearchController extends GetxController {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       isOnline.value = (result != ConnectivityResult.none);
     });
-    getListOfRestaurants();
+    searchRestauran();
     performSearch();
     super.onInit();
   }
 
-  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = ''.obs;
 
-  void getListOfRestaurants() async {
+  searchRestauran() async {
     try {
       isLoading(true);
       var result = await restaurantApi.fetchRestaurantData(client, []);
@@ -81,8 +81,8 @@ class RestaurantSearchController extends GetxController {
           final List<RestaurantDetailModel> details = [];
 
           for (final restaurantId in restaurantIds) {
-            final detail =
-                await restaurantApi.getRestaurantDetail(restaurantId!);
+            final detail = await restaurantApi
+                .getRestaurantDetail(restaurantId.toString());
             details.add(detail);
           }
 

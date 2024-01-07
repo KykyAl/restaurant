@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/model/remote_model.dart';
 import 'package:restauran_app/model/remote_model_detail.dart';
@@ -38,32 +37,33 @@ class RemoteDatasource {
         final Map<String, dynamic> data = json.decode(response.body);
         final restaurantData = data['restaurant'];
         return RestaurantDetailModel(
-          id: restaurantData['id'],
-          name: restaurantData['name'],
-          description: restaurantData['description'],
-          city: restaurantData['city'],
-          address: restaurantData['address'],
-          pictureId: restaurantData['pictureId'],
-          categories: (restaurantData['categories'] as List<dynamic>)
-              .map((category) => Category(name: category['name']))
-              .toList(),
-          menus: Menus(
-            foods: (restaurantData['menus']['foods'] as List<dynamic>)
-                .map((food) => MenuItem(name: food['name']))
+            id: restaurantData['id'],
+            name: restaurantData['name'],
+            description: restaurantData['description'],
+            city: restaurantData['city'],
+            address: restaurantData['address'],
+            pictureId: restaurantData['pictureId'],
+            categories: (restaurantData['categories'] as List<dynamic>)
+                .map((category) => Category(name: category['name']))
                 .toList(),
-            drinks: (restaurantData['menus']['drinks'] as List<dynamic>)
-                .map((drink) => MenuItem(name: drink['name']))
-                .toList(),
-          ),
-          rating: restaurantData['rating'].toDouble(),
-          customerReviews: (restaurantData['customerReviews'] as List<dynamic>)
-              .map((review) => CustomerReview(
-                    name: review['name'],
-                    review: review['review'],
-                    date: review['date'],
-                  ))
-              .toList(),
-        );
+            menus: Menus(
+              foods: (restaurantData['menus']['foods'] as List<dynamic>)
+                  .map((food) => MenuItem(name: food['name']))
+                  .toList(),
+              drinks: (restaurantData['menus']['drinks'] as List<dynamic>)
+                  .map((drink) => MenuItem(name: drink['name']))
+                  .toList(),
+            ),
+            rating: restaurantData['rating'].toDouble(),
+            customerReviews:
+                (restaurantData['customerReviews'] as List<dynamic>)
+                    .map((review) => CustomerReview(
+                          name: review['name'],
+                          review: review['review'],
+                          date: review['date'],
+                        ))
+                    .toList(),
+            isFavorite: false);
       } else {
         throw Exception('pembaruan data');
       }
@@ -75,11 +75,6 @@ class RemoteDatasource {
 
   Future<List<RestaurantSearchModel>> searchRestaurants(String query) async {
     final response = await http.get(Uri.parse('$_BASE_URL/search?q=$query'));
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      print('No internet connection');
-      throw Exception('No internet connection');
-    }
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);

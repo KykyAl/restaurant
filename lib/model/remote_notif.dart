@@ -1,4 +1,5 @@
 class RestaurantNotifModel {
+  final String id;
   final String name;
   final String city;
   final String description;
@@ -8,6 +9,7 @@ class RestaurantNotifModel {
   // Tambahkan properti lainnya sesuai kebutuhan
 
   RestaurantNotifModel({
+    required this.id,
     required this.name,
     required this.description,
     required this.pictureId,
