@@ -1,16 +1,21 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/model/remote_model.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_search.dart';
 
 class RestaurantController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final Connectivity _connectivity = Connectivity();
+  final client = http.Client();
+
+  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
+
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
@@ -28,19 +33,30 @@ class RestaurantController extends GetxController {
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
   RxBool isInternetConnected = true.obs;
-
   var isOnline = true.obs;
-
   final RxBool isOnlineRx = true.obs;
+  RxInt selectedIndex = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     checkConnectionStatus();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-
     getListOfRestaurants();
     performSearch();
+  }
+
+  void onItemTapped(int index) {
+    if (selectedIndex.value != index) {
+      selectedIndex.value = index;
+      if (selectedIndex.value == 0) {
+        Get.offAllNamed(navigatorHelper.listPage);
+      } else if (selectedIndex.value == 1) {
+        Get.offAllNamed(navigatorHelper.favoriteList);
+      } else if (selectedIndex.value == 2) {
+        Get.offAllNamed(navigatorHelper.notif);
+      }
+    }
   }
 
   void checkConnectionStatus() async {
@@ -62,19 +78,17 @@ class RestaurantController extends GetxController {
       content: Text('No internet connection'),
       duration: Duration(seconds: 3),
     );
-
-    // Menampilkan snackbar menggunakan context saat ini
     ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);
   }
 
-  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = ''.obs;
-  void getListOfRestaurants() async {
+
+  getListOfRestaurants() async {
     try {
       isLoading(true);
-      var result = await restaurantApi.fetchRestaurantData([]);
+      var result = await restaurantApi.fetchRestaurantData(client, []);
       restaurantList.assignAll(result);
       isError(false);
     } catch (error) {
@@ -111,7 +125,8 @@ class RestaurantController extends GetxController {
       isOnline.value = await checkInternetConnectivity();
 
       if (isOnline.value) {
-        restaurantList.assignAll(await restaurantApi.fetchRestaurantData([]));
+        restaurantList
+            .assignAll(await restaurantApi.fetchRestaurantData(client, []));
       }
     } catch (e) {
       print('Error loading data: $e');
@@ -202,8 +217,8 @@ class RestaurantController extends GetxController {
       try {
         final results =
             await restaurantApi.searchRestaurants(searchQuery.value);
-        final fotoResults = await restaurantApi
-            .fetchRestaurantData(results.map((r) => r.id).toList());
+        final fotoResults = await restaurantApi.fetchRestaurantData(
+            client, results.map((r) => r.id).toList());
         final List<String?> restaurantIds = results.map((e) => e.id).toList();
         final List<RestaurantDetailModel> details = [];
 

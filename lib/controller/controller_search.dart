@@ -3,15 +3,17 @@ import 'dart:developer';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
-import 'package:restauran_app/data/remote_model_search.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
+import 'package:restauran_app/model/remote_model.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_search.dart';
 
 class RestaurantSearchController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
+  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
@@ -29,6 +31,7 @@ class RestaurantSearchController extends GetxController {
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
   RxBool isInternetConnected = true.obs;
+  final client = http.Client();
 
   var isOnline = true.obs;
 
@@ -37,20 +40,19 @@ class RestaurantSearchController extends GetxController {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       isOnline.value = (result != ConnectivityResult.none);
     });
-    getListOfRestaurants();
+    searchRestauran();
     performSearch();
     super.onInit();
   }
 
-  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = ''.obs;
 
-  void getListOfRestaurants() async {
+  searchRestauran() async {
     try {
       isLoading(true);
-      var result = await restaurantApi.fetchRestaurantData([]);
+      var result = await restaurantApi.fetchRestaurantData(client, []);
       restaurantList.assignAll(result);
       isError(false);
     } catch (error) {
@@ -60,7 +62,7 @@ class RestaurantSearchController extends GetxController {
     }
   }
 
-  void performSearch() async {
+  performSearch() async {
     if (searchQuery.isNotEmpty) {
       isLoadingSearch(true);
 
@@ -68,25 +70,32 @@ class RestaurantSearchController extends GetxController {
         final results =
             await restaurantApi.searchRestaurants(searchQuery.value);
 
-        final fotoResults = await restaurantApi
-            .fetchRestaurantData(results.map((r) => r.id).toList());
-        log('FOTO RESULT: ${fotoResults}');
+        if (results.isNotEmpty) {
+          // Perbaikan: Sertakan parameter client saat memanggil fetchRestaurantData
+          final fotoResults = await restaurantApi.fetchRestaurantData(
+            client,
+            results.map((r) => r.id).toList(),
+          );
 
-        final List<String?> restaurantIds = results.map((e) => e.id).toList();
-        final List<RestaurantDetailModel> details = [];
+          final List<String?> restaurantIds = results.map((e) => e.id).toList();
+          final List<RestaurantDetailModel> details = [];
 
-        for (final restaurantId in restaurantIds) {
-          final detail = await restaurantApi.getRestaurantDetail(restaurantId!);
-          details.add(detail);
+          for (final restaurantId in restaurantIds) {
+            final detail = await restaurantApi
+                .getRestaurantDetail(restaurantId.toString());
+            details.add(detail);
+          }
+
+          searchResults.assignAll(results);
+          log('Hasil Pencarian: ${searchResults.toJson()}');
+
+          searchFoto.assignAll(fotoResults);
+          log('FOTO RESULT: ${searchFoto}');
+          searchDetail.assignAll(details);
+        } else {
+          log('No search results found.');
         }
-
-        searchResults.assignAll(results);
-        searchFoto.assignAll(fotoResults);
-        log('FOTO RESULT: ${searchFoto}');
-        searchDetail.assignAll(details);
       } catch (e) {
-        final errorMessage = 'Koneksi Anda Terpustus!!!.';
-        showSnackbar(Get.context!, errorMessage);
       } finally {
         isLoadingSearch(false);
       }

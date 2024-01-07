@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/data/data_source.dart';
-import 'package:restauran_app/data/remote_model.dart';
-import 'package:restauran_app/data/remote_model_detail.dart';
+import 'package:restauran_app/database/db_helper.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
-import 'package:restauran_app/widget/addChart.dart';
+import 'package:restauran_app/model/remote_model_detail.dart';
 
 class RestaurantDetailController extends GetxController {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final RemoteDatasource restaurantApi = RemoteDatasource();
+
   final RxBool isDialogVisible = false.obs;
-  Rx<RestaurantDetailModel?> restaurantDetail =
-      Rx<RestaurantDetailModel?>(null);
+  RxList<RestaurantDetailModel> restaurantDetail =
+      <RestaurantDetailModel>[].obs;
   RxBool isLoadingDetail = true.obs;
   RxBool isErrorDetail = false.obs;
   RxString errorMessageDetail = ''.obs;
@@ -21,7 +21,7 @@ class RestaurantDetailController extends GetxController {
   Rx<int> responseTime = 0.obs;
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
-  RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
+  static final DatabaseHelper dbHelper = DatabaseHelper();
 
   var isLoading = true.obs;
   var isError = false.obs;
@@ -92,36 +92,34 @@ class RestaurantDetailController extends GetxController {
     }
   }
 
-  Future<void> fetchRestaurantDetail(String restaurantId) async {
+  Future<RestaurantDetailModel?> fetchRestaurantDetail(
+      String restaurantId) async {
     try {
       isLoadingDetail(true);
       var result = await restaurantApi.getRestaurantDetail(restaurantId);
-      restaurantDetail.value = result;
+      restaurantDetail.assign(result);
+      return result;
     } catch (error) {
       isErrorDetail(true);
-      final errorMessage = 'Koneksi Anda Terpustus!!!.';
+      final errorMessage = 'Koneksi Anda Terputus!!!.';
       showSnackbar(Get.context!, errorMessage);
+      return null;
     } finally {
       isLoadingDetail(false);
     }
   }
 
   void showSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: 3),
-    );
+    Future.delayed(
+      Duration.zero,
+      () {
+        final snackBar = SnackBar(
+          content: Text(message),
+          duration: Duration(seconds: 3),
+        );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void addToCart(BuildContext context, food) {
-    ShoppingCart().items.add(CartItem(name: food.name, price: 1.0));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${food.name} added to the cart'),
-        duration: Duration(seconds: 2),
-      ),
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }

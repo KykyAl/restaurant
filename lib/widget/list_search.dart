@@ -2,75 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_search.dart';
-import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/image.dart';
 
 class SearchPage extends GetView<RestaurantSearchController> {
-  final RemoteDatasource restaurantApi = RemoteDatasource();
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final searchController = Get.find<RestaurantSearchController>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            'Pencarian',
-            style: GoogleFonts.abrilFatface(
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          'Pencarian',
+          style: GoogleFonts.abrilFatface(
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
           ),
-          backgroundColor: Colors.brown,
         ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 8.0,
-            ),
-            Container(
-              margin: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (query) {
-                        searchController.searchQuery.value = query;
-                      },
-                      style: TextStyle(fontSize: 14.0),
-                      decoration: InputDecoration(
-                        labelText: 'Cari....',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.05,
-                          vertical: MediaQuery.of(context).size.height * 0.02,
-                        ),
+        backgroundColor: Colors.brown,
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 8.0,
+          ),
+          Container(
+            margin: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    onChanged: (query) {
+                      searchController.searchQuery.value = query;
+                    },
+                    style: TextStyle(fontSize: 14.0),
+                    decoration: InputDecoration(
+                      labelText: 'Cari....',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05,
+                        vertical: MediaQuery.of(context).size.height * 0.02,
                       ),
                     ),
                   ),
-                  IconButton(
-                    color: Colors.green,
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      searchController.performSearch();
-                    },
-                  ),
-                ],
-              ),
+                ),
+                IconButton(
+                  color: Colors.green,
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    searchController.performSearch();
+                  },
+                ),
+              ],
             ),
-            SizedBox(height: 10.0),
-            Obx(() {
-              return _buildSearchResults(searchController);
-            }),
-          ],
-        ),
+          ),
+          SizedBox(height: 10.0),
+          Obx(() {
+            return _buildSearchResults(searchController);
+          }),
+        ],
       ),
     );
   }
@@ -122,7 +117,6 @@ class SearchPage extends GetView<RestaurantSearchController> {
                   child: ImgApi(
                     imageUrl:
                         'https://restaurant-api.dicoding.dev/images/large/${restauranDetail.pictureId}',
-                    scaffoldKey: _scaffoldKey,
                   ),
                 ),
                 title: Text(
