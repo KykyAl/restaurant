@@ -54,8 +54,8 @@ class RestaurantDetailController extends GetxController {
                 ),
               ),
               ElevatedButton(
-                onPressed: () => Get.back(),
-                child: Text("Get Back"),
+                onPressed: () => Get.offAllNamed(navigatorHelper.root),
+                child: Text("Ok"),
               ),
               Expanded(
                 child: SizedBox(

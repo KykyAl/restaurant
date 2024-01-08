@@ -1,3 +1,5 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/controller/controller_page.dart';
 import 'package:restauran_app/database/notification.dart';
@@ -7,14 +9,89 @@ class SettingController extends GetxController {
   final NotificationService notificationService = NotificationService();
   final controller = Get.find<RestaurantController>();
   var isReminderEnabled = false.obs;
-
+  RxBool hasInternetConnection = true.obs;
+  RxBool connectionStatus = false.obs;
+  RxBool showPopup = false.obs;
+  Rx<int> responseTime = 0.obs;
+  Rx<Color> color = Colors.green.obs;
+  Rx<IconData> icons = Icons.wifi.obs;
+  RxBool isInternetConnected = true.obs;
+  var isOnline = true.obs;
   @override
   void onInit() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      isOnline.value = (result != ConnectivityResult.none);
+    });
     loadReminderStatus();
+
     super.onInit();
   }
 
-  // Di dalam SettingController
+  dialog() {
+    try {
+      return showModalBottomSheet(
+        useRootNavigator: false,
+        enableDrag: false,
+        context: Get.context!,
+        builder: (context) => Container(
+          height: 300,
+          padding: EdgeInsets.all(30),
+          color: Colors.white,
+          child: Column(
+            children: [
+              Icon(
+                Icons.wifi_off_rounded,
+                size: 30,
+              ),
+              Text(
+                "Mohon maaf anda sedang tidak terhubung dengan internet",
+                textAlign: TextAlign.center,
+              ),
+              Divider(),
+              Expanded(
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Get.back(),
+                child: Text("Get search"),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.cloud_off_rounded,
+                  ),
+                  Expanded(
+                    child: SizedBox(child: Divider()),
+                  ),
+                  RotatedBox(
+                    quarterTurns: -2,
+                    child: Icon(
+                      Icons.arrow_back_ios_new_sharp,
+                      size: 15,
+                    ),
+                  ),
+                  Icon(
+                    Icons.phone_iphone_rounded,
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   void toggleReminder() async {
     isReminderEnabled.value = !isReminderEnabled.value;
     if (isReminderEnabled.value) {
@@ -36,7 +113,7 @@ class SettingController extends GetxController {
 
   Future<void> saveReminderStatus(bool isReminderEnabled) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isReminderEnabled', false);
+    await prefs.setBool('isReminderEnabled', isReminderEnabled);
   }
 
   Future<void> loadReminderStatus() async {

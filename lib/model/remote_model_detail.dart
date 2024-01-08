@@ -9,7 +9,7 @@ class RestaurantDetailModel {
   final Menus menus;
   final double rating;
   final List<CustomerReview> customerReviews;
-  bool isFavorite; // Tambahkan properti isFavorite
+  bool isFavorite;
 
   RestaurantDetailModel({
     required this.id,
@@ -25,7 +25,6 @@ class RestaurantDetailModel {
     required this.isFavorite,
   });
 
-  // Serialisasi objek ke JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -43,7 +42,6 @@ class RestaurantDetailModel {
     };
   }
 
-  // Deserialisasi objek dari JSON
   factory RestaurantDetailModel.fromJson(Map<String, dynamic> json) {
     return RestaurantDetailModel(
       id: json['id'],
@@ -60,8 +58,7 @@ class RestaurantDetailModel {
       customerReviews: (json['customerReviews'] as List<dynamic>)
           .map((review) => CustomerReview.fromJson(review))
           .toList(),
-      isFavorite:
-          json['isFavorite'] as bool? ?? false, // Ambil isFavorite dari JSON
+      isFavorite: json['isFavorite'] as bool? ?? false,
     );
   }
 }
@@ -71,14 +68,12 @@ class Category {
 
   Category({required this.name});
 
-  // Serialisasi objek ke JSON
   Map<String, dynamic> toJson() {
     return {
       'name': name,
     };
   }
 
-  // Deserialisasi objek dari JSON
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       name: json['name'],
@@ -92,7 +87,6 @@ class Menus {
 
   Menus({required this.foods, required this.drinks});
 
-  // Serialisasi objek ke JSON
   Map<String, dynamic> toJson() {
     return {
       'foods': foods.map((food) => food.toJson()).toList(),
@@ -100,7 +94,6 @@ class Menus {
     };
   }
 
-  // Deserialisasi objek dari JSON
   factory Menus.fromJson(Map<String, dynamic> json) {
     return Menus(
       foods: (json['foods'] as List<dynamic>)
@@ -118,14 +111,12 @@ class MenuItem {
 
   MenuItem({required this.name});
 
-  // Serialisasi objek ke JSON
   Map<String, dynamic> toJson() {
     return {
       'name': name,
     };
   }
 
-  // Deserialisasi objek dari JSON
   factory MenuItem.fromJson(Map<String, dynamic> json) {
     return MenuItem(
       name: json['name'],
@@ -144,7 +135,6 @@ class CustomerReview {
     required this.date,
   });
 
-  // Serialisasi objek ke JSON
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -153,7 +143,6 @@ class CustomerReview {
     };
   }
 
-  // Deserialisasi objek dari JSON
   factory CustomerReview.fromJson(Map<String, dynamic> json) {
     return CustomerReview(
       name: json['name'],

@@ -13,9 +13,7 @@ class RestaurantController extends GetxController {
   final RemoteDatasource restaurantApi = RemoteDatasource();
   final Connectivity _connectivity = Connectivity();
   final client = http.Client();
-
   RxList<RestaurantModel> restaurantList = <RestaurantModel>[].obs;
-
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
@@ -43,7 +41,6 @@ class RestaurantController extends GetxController {
     checkConnectionStatus();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     getListOfRestaurants();
-    performSearch();
   }
 
   void onItemTapped(int index) {
@@ -93,6 +90,8 @@ class RestaurantController extends GetxController {
       isError(false);
     } catch (error) {
       isError(true);
+      final errorMessage = 'Koneksi Anda Terputus!!!.';
+      showSnackbar(Get.context!, errorMessage);
     } finally {
       isLoading(false);
     }
@@ -111,6 +110,7 @@ class RestaurantController extends GetxController {
       connectionStatus.value = true;
       showPopup.value = false;
     }
+    update();
   }
 
   Future<bool> checkInternetConnectivity() async {

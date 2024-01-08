@@ -6,14 +6,12 @@ class RestaurantNotifModel {
   final String pictureId;
   final double rating;
 
-  // Tambahkan properti lainnya sesuai kebutuhan
-
   RestaurantNotifModel({
     required this.id,
     required this.name,
     required this.description,
     required this.pictureId,
     required this.city,
-    required this.rating, // Inisialisasi properti lainnya
+    required this.rating,
   });
 }
