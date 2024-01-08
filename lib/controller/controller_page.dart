@@ -17,7 +17,7 @@ class RestaurantController extends GetxController {
   RxString errorMessageDetail = ''.obs;
   RxBool isLoadingSearch = false.obs;
   RxList<RestaurantSearchModel> searchResults = <RestaurantSearchModel>[].obs;
-  RxList<RestaurantModel> searchFoto = <RestaurantModel>[].obs;
+  RxList<RestaurantModel> searchPhoto = <RestaurantModel>[].obs;
   RxList<RestaurantDetailModel> searchDetail = <RestaurantDetailModel>[].obs;
   RxString searchQuery = ''.obs;
   RxList<RestaurantModel> listRestaurant = <RestaurantModel>[].obs;
@@ -228,7 +228,7 @@ class RestaurantController extends GetxController {
         }
 
         searchResults.assignAll(results);
-        searchFoto.assignAll(fotoResults);
+        searchPhoto.assignAll(fotoResults);
         searchDetail.assignAll(details);
       } catch (e) {
         final errorMessage = 'Koneksi Anda Terpustus!!!.';

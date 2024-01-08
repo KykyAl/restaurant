@@ -14,17 +14,23 @@ class ReviewModel {
   factory ReviewModel.fromRawJson(String str) =>
       ReviewModel.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+  String toRawJson() {
+    return json.encode(toJson());
+  }
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) => ReviewModel(
-        name: json["name"],
-        review: json["review"],
-        date: json["date"],
-      );
+  factory ReviewModel.fromJson(Map<String, dynamic> json) {
+    return ReviewModel(
+      name: json["name"],
+      review: json["review"],
+      date: json["date"],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "review": review,
-        "date": date,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "review": review,
+      "date": date,
+    };
+  }
 }

@@ -1,3 +1,7 @@
+import 'package:restauran_app/model/remote_model_detail_category.dart';
+import 'package:restauran_app/model/remote_model_detail_customeriview.dart';
+import 'package:restauran_app/model/remote_model_detail_menus.dart';
+
 class RestaurantDetailModel {
   final String id;
   final String name;
@@ -59,95 +63,6 @@ class RestaurantDetailModel {
           .map((review) => CustomerReview.fromJson(review))
           .toList(),
       isFavorite: json['isFavorite'] as bool? ?? false,
-    );
-  }
-}
-
-class Category {
-  final String name;
-
-  Category({required this.name});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-    };
-  }
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      name: json['name'],
-    );
-  }
-}
-
-class Menus {
-  final List<MenuItem> foods;
-  final List<MenuItem> drinks;
-
-  Menus({required this.foods, required this.drinks});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'foods': foods.map((food) => food.toJson()).toList(),
-      'drinks': drinks.map((drink) => drink.toJson()).toList(),
-    };
-  }
-
-  factory Menus.fromJson(Map<String, dynamic> json) {
-    return Menus(
-      foods: (json['foods'] as List<dynamic>)
-          .map((food) => MenuItem.fromJson(food))
-          .toList(),
-      drinks: (json['drinks'] as List<dynamic>)
-          .map((drink) => MenuItem.fromJson(drink))
-          .toList(),
-    );
-  }
-}
-
-class MenuItem {
-  final String name;
-
-  MenuItem({required this.name});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-    };
-  }
-
-  factory MenuItem.fromJson(Map<String, dynamic> json) {
-    return MenuItem(
-      name: json['name'],
-    );
-  }
-}
-
-class CustomerReview {
-  final String name;
-  final String review;
-  final String date;
-
-  CustomerReview({
-    required this.name,
-    required this.review,
-    required this.date,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'review': review,
-      'date': date,
-    };
-  }
-
-  factory CustomerReview.fromJson(Map<String, dynamic> json) {
-    return CustomerReview(
-      name: json['name'],
-      review: json['review'],
-      date: json['date'],
     );
   }
 }
