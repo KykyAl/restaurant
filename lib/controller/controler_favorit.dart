@@ -28,7 +28,6 @@ class FavoriteListController extends GetxController {
     favoriteRestaurants.assignAll(
       favorites.map((map) => RestaurantDataBase.fromJson(map)),
     );
-    print("Favorite restaurants: $favoriteRestaurants");
   }
 
   Future<bool?> _showConfirmationDialog(BuildContext context,

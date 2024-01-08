@@ -97,43 +97,45 @@ class SettingPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 50,
+                      height: 100,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Get.offAllNamed(navigatorHelper.root);
-                                },
-                                child: Text('Daily Notification'),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Obx(() => Switch(
-                                        value: settingController
-                                            .isReminderEnabled.value,
-                                        onChanged: (value) {
-                                          settingController.toggleReminder();
-                                        },
-                                      )),
-                                  SizedBox(width: 10),
-                                  Obx(() => Text(
-                                        settingController
-                                                .isReminderEnabled.value
-                                            ? 'Notifikasi Hidup'
-                                            : 'Notifikasi Mati',
-                                      )),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Get.offAllNamed(navigatorHelper.root);
+                                  },
+                                  child: Text('Daily Notification'),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Obx(() => Switch(
+                                          value: settingController
+                                              .isReminderEnabled.value,
+                                          onChanged: (value) {
+                                            settingController.toggleReminder();
+                                          },
+                                        )),
+                                    SizedBox(width: 10),
+                                    Obx(() => Text(
+                                          settingController
+                                                  .isReminderEnabled.value
+                                              ? 'Notifikasi Hidup'
+                                              : 'Notifikasi Mati',
+                                        )),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
