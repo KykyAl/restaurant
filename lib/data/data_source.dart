@@ -1,9 +1,12 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/model/remote_model.dart';
 import 'package:restauran_app/model/remote_model_detail.dart';
+import 'package:restauran_app/model/remote_model_detail_category.dart';
+import 'package:restauran_app/model/remote_model_detail_customeriview.dart';
+import 'package:restauran_app/model/remote_model_detail_menu_item.dart';
+import 'package:restauran_app/model/remote_model_detail_menus.dart';
 import 'package:restauran_app/model/remote_model_search.dart';
 
 class RemoteDatasource {
@@ -68,7 +71,6 @@ class RemoteDatasource {
         throw Exception('pembaruan data');
       }
     } catch (e) {
-      log('Error: $e');
       throw Exception('Error: $e');
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restauran_app/controller/controller_search.dart';
+import 'package:restauran_app/error/404.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
 import 'package:restauran_app/widget/image.dart';
 
@@ -51,13 +52,14 @@ class SearchPage extends GetView<RestaurantSearchController> {
                     ),
                   ),
                 ),
-                IconButton(
-                  color: Colors.green,
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    searchController.performSearch();
-                  },
-                ),
+                if (searchController.isInternetConnected.value)
+                  IconButton(
+                    color: Colors.green,
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      searchController.performSearch();
+                    },
+                  ),
               ],
             ),
           ),
@@ -72,8 +74,9 @@ class SearchPage extends GetView<RestaurantSearchController> {
 
   Widget _buildSearchResults(RestaurantSearchController searchController) {
     if (!searchController.isInternetConnected.value) {
-      return Center(
-        child: Text('Tidak ada koneksi internet'),
+      return NotFound(
+        codeError: '500',
+        message: 'An error occurred: ${controller.isError.value}',
       );
     } else if (searchController.isLoadingSearch.value) {
       return Center(

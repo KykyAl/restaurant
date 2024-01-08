@@ -19,17 +19,14 @@ class RestaurantDataBase {
     required this.isFavorite,
   });
 
-  // Inside RestaurantDataBase class
-
   factory RestaurantDataBase.fromJson(Map<String, dynamic> json) {
     return RestaurantDataBase(
-      id: json['id'].toString(), // Convert id to String
-      name: json['name'] ?? '', // Use empty string if name is null
-      address: json['address'] ?? '', // Use empty string if address is null
-      city: json['city'] ?? '', // Use empty string if city is null
-      pictureId: json['pictureId'], // Use empty string if pictureId is null
-      rating: json['rating']?.toDouble() ??
-          0.0, // Convert rating to double or use 0.0 if null
+      id: json['id'].toString(),
+      name: json['name'] ?? '',
+      address: json['address'] ?? '',
+      city: json['city'] ?? '',
+      pictureId: json['pictureId'],
+      rating: json['rating']?.toDouble() ?? 0.0,
       isFavorite: (json['isFavorite'] as bool?)?.obs ?? false.obs,
     );
   }

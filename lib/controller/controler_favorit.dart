@@ -9,6 +9,11 @@ class FavoriteListController extends GetxController {
   Rx<RestaurantDetailModel?> restaurantDetail =
       Rx<RestaurantDetailModel?>(null);
 
+  @override
+  void onInit() {
+    super.onInit();
+    loadFavoriteRestaurants();
+  }
   refreshFavoriteStatus(String restaurantId) async {
     final isFavoriteNow =
         await DatabaseHelper.isRestaurantInFavorites(restaurantId);

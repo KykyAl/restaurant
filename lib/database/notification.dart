@@ -88,7 +88,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       'Daily Restaurant Reminder',
-      'Jangan lupa cek restoran acak hari ini!',
+      'Jangan lupa cek restoran acak hari ini! .. Klik!!',
       _nextInstance(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
