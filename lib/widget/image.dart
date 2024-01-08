@@ -21,25 +21,9 @@ class ImgApi extends StatelessWidget {
         imageErrorBuilder: (context, error, stackTrace) {
           return Container(
             color: Colors.grey,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Hapus dialog kesalahan
-                  // Icon(Icons.error, size: 40, color: Colors.white),
-                  // SizedBox(height: 8),
-                  // Text(
-                  //   'Gagal memuat Gambar ',
-                  //   style: TextStyle(color: Colors.white),
-                  // ),
-                ],
-              ),
-            ),
           );
         },
       ),
     );
   }
-
-  // ... (kode ImgApi yang sebelumnya)
 }

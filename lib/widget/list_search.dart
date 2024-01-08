@@ -89,7 +89,6 @@ class SearchPage extends GetView<RestaurantSearchController> {
           child: Text('Tidak ditemukan'),
         );
       }
-
       return Expanded(
         child: ListView.builder(
           shrinkWrap: true,

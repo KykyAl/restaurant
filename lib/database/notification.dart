@@ -68,7 +68,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(
       notificationId,
       'Restoran Harian: ${randomRestaurant.name}',
-      'Cek restoran acak hari ini!',
+      '${randomRestaurant.city}',
       platformChannelSpecifics,
       payload: payload,
     );
@@ -77,18 +77,20 @@ class NotificationService {
           id: randomRestaurant.id,
           notificationTitle: 'Restoran Harian: ${randomRestaurant.name}',
           notificationMessage: '${randomRestaurant.city}',
-          pictureId: randomRestaurant.pictureId,
+          city: randomRestaurant.pictureId,
           rating: randomRestaurant.rating,
         ));
-
     await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
   Future<void> showDailyRestaurantNotification() async {
+    final RestaurantNotifModel randomRestaurant = buildRandomRestaurant();
+    final String restaurantName = randomRestaurant.name;
+    final String restaurantLocation = randomRestaurant.city;
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      'Daily Restaurant Reminder',
-      'Jangan lupa cek restoran acak hari ini! .. Klik!!',
+      'Restoran Harian: $restaurantName',
+      'lokasi: ${restaurantLocation}',
       _nextInstance(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -120,11 +122,9 @@ class NotificationService {
     if (now.isAfter(scheduledDate)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-
     return scheduledDate;
   }
 
-  // Di dalam NotificationService
   Future<void> cancelScheduledNotification() async {
     await flutterLocalNotificationsPlugin.cancel(0);
   }

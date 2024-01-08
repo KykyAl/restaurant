@@ -11,7 +11,7 @@ class SettingPage extends StatelessWidget {
   final NavigatorHelper navigatorHelper = NavigatorHelper();
   final String notificationTitle;
   final String notificationMessage;
-  final String pictureId;
+  final String city;
   final double rating;
   final String id;
 
@@ -19,7 +19,7 @@ class SettingPage extends StatelessWidget {
     required this.id,
     required this.notificationTitle,
     required this.notificationMessage,
-    required this.pictureId,
+    required this.city,
     required this.rating,
   });
 
