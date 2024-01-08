@@ -82,7 +82,7 @@ class RestaurantController extends GetxController {
   var isError = false.obs;
   var errorMessage = ''.obs;
 
-  getListOfRestaurants() async {
+  Future<void> getListOfRestaurants() async {
     try {
       isLoading(true);
       var result = await restaurantApi.fetchRestaurantData(client, []);
@@ -207,35 +207,6 @@ class RestaurantController extends GetxController {
       );
     } catch (e) {
       rethrow;
-    }
-  }
-
-  void performSearch() async {
-    if (searchQuery.isNotEmpty) {
-      isLoadingSearch(true);
-
-      try {
-        final results =
-            await restaurantApi.searchRestaurants(searchQuery.value);
-        final fotoResults = await restaurantApi.fetchRestaurantData(
-            client, results.map((r) => r.id).toList());
-        final List<String?> restaurantIds = results.map((e) => e.id).toList();
-        final List<RestaurantDetailModel> details = [];
-
-        for (final restaurantId in restaurantIds) {
-          final detail = await restaurantApi.getRestaurantDetail(restaurantId!);
-          details.add(detail);
-        }
-
-        searchResults.assignAll(results);
-        searchPhoto.assignAll(fotoResults);
-        searchDetail.assignAll(details);
-      } catch (e) {
-        final errorMessage = 'Koneksi Anda Terpustus!!!.';
-        showSnackbar(Get.context!, errorMessage);
-      } finally {
-        isLoadingSearch(false);
-      }
     }
   }
 

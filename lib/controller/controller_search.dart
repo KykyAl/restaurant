@@ -41,7 +41,6 @@ class RestaurantSearchController extends GetxController {
       isOnline.value = (result != ConnectivityResult.none);
     });
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-    searchRestauran();
     performSearch();
     super.onInit();
   }
@@ -131,21 +130,6 @@ class RestaurantSearchController extends GetxController {
       );
     } catch (e) {
       rethrow;
-    }
-  }
-
-  searchRestauran() async {
-    try {
-      isLoading(true);
-      var result = await restaurantApi.fetchRestaurantData(client, []);
-      restaurantList.assignAll(result);
-      isError(false);
-    } catch (error) {
-      isError(true);
-      final errorMessage = 'Koneksi Anda Terpustus!!!.';
-      showSnackbar(Get.context!, errorMessage);
-    } finally {
-      isLoading(false);
     }
   }
 
