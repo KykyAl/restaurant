@@ -14,6 +14,7 @@ class FavoriteListController extends GetxController {
     super.onInit();
     loadFavoriteRestaurants();
   }
+
   refreshFavoriteStatus(String restaurantId) async {
     final isFavoriteNow =
         await DatabaseHelper.isRestaurantInFavorites(restaurantId);

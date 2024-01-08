@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -151,7 +149,7 @@ class RestaurantSearchController extends GetxController {
     }
   }
 
-  performSearch() async {
+  Future<void> performSearch() async {
     if (searchQuery.isNotEmpty) {
       isLoadingSearch(true);
 
@@ -177,8 +175,13 @@ class RestaurantSearchController extends GetxController {
           searchResults.assignAll(results);
           searchFoto.assignAll(fotoResults);
           searchDetail.assignAll(details);
+
+          final searchResultsList = searchResults;
+          if (searchResultsList.isEmpty) {
+            print('Tidak ditemukan');
+          }
         } else {
-          log('No search results found.');
+          print('No search results found.');
         }
       } catch (e) {
         print('Error saat pencarian: $e');

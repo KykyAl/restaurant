@@ -62,7 +62,7 @@ class RestauranApp extends StatelessWidget {
             id: '',
             notificationTitle: 'Restauran Random',
             notificationMessage: '  ',
-            pictureId: '',
+            city: '',
             rating: 0.0,
           ),
         ),
