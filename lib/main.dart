@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
 class Dependency implements Bindings {
   @override
   void dependencies() {
-    Get.put<RestaurantController>(RestaurantController());
+    Get.put<RestaurantController>(RestaurantController(), permanent: true);
     Get.put<RestaurantDetailController>(RestaurantDetailController());
     Get.put<RestaurantSearchController>(RestaurantSearchController());
     Get.put<FavoriteListController>(FavoriteListController());
