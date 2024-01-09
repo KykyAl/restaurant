@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restauran_app/controller/controller_page.dart';
@@ -19,11 +18,7 @@ class SettingController extends GetxController {
   var isOnline = true.obs;
   @override
   void onInit() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      isOnline.value = (result != ConnectivityResult.none);
-    });
     loadReminderStatus();
-
     super.onInit();
   }
 

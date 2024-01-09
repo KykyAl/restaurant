@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:restauran_app/data/data_source.dart';
 import 'package:restauran_app/helper/navigator_helper.dart';
@@ -27,7 +28,6 @@ class RestaurantController extends GetxController {
   RxBool hasInternetConnection = true.obs;
   RxBool connectionStatus = false.obs;
   RxBool showPopup = false.obs;
-  Rx<int> responseTime = 0.obs;
   Rx<Color> color = Colors.green.obs;
   Rx<IconData> icons = Icons.wifi.obs;
   RxBool isInternetConnected = true.obs;
@@ -38,7 +38,6 @@ class RestaurantController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkConnectionStatus();
     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     getListOfRestaurants();
   }
@@ -53,20 +52,6 @@ class RestaurantController extends GetxController {
       } else if (selectedIndex.value == 2) {
         Get.offAllNamed(navigatorHelper.notif);
       }
-    }
-  }
-
-  void checkConnectionStatus() async {
-    try {
-      var response =
-          await GetConnect().get('https://restaurant-api.dicoding.dev/list');
-      isOnlineRx.value = response.statusCode == 200;
-      if (!isOnlineRx.value) {
-        showNoInternetSnackbar();
-      }
-    } catch (e) {
-      isOnlineRx.value = false;
-      showNoInternetSnackbar();
     }
   }
 
@@ -104,11 +89,10 @@ class RestaurantController extends GetxController {
         showPopup.value = true;
         dialog();
       }
-      icons.value = Icons.wifi_1_bar;
-      color.value = Colors.red;
     } else {
       connectionStatus.value = true;
       showPopup.value = false;
+      Get.back();
     }
     update();
   }
@@ -148,6 +132,7 @@ class RestaurantController extends GetxController {
   dialog() {
     try {
       return showModalBottomSheet(
+        isDismissible: false,
         useRootNavigator: false,
         enableDrag: false,
         context: Get.context!,
@@ -161,6 +146,9 @@ class RestaurantController extends GetxController {
                 Icons.wifi_off_rounded,
                 size: 30,
               ),
+              SizedBox(
+                height: 10,
+              ),
               Text(
                 "Mohon maaf anda sedang tidak terhubung dengan internet",
                 textAlign: TextAlign.center,
@@ -171,10 +159,22 @@ class RestaurantController extends GetxController {
                   height: 20,
                 ),
               ),
-              ElevatedButton(
-                onPressed: () => Get.back(),
-                child: Text("Get Back"),
-              ),
+              Container(
+                  height: 30,
+                  width: 170,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Color.fromARGB(255, 245, 241, 241)),
+                  child: Center(
+                    child: Text(
+                      "Hidupkan Internetnya dulu",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  )),
               Expanded(
                 child: SizedBox(
                   height: 20,
